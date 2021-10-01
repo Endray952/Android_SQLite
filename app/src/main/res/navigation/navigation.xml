@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/filmsOptions">
+
+    <fragment
+        android:id="@+id/filmsOptions"
+        android:name="com.example.android_sqlite.FilmsOptions"
+        android:label="fragment_films_options"
+        tools:layout="@layout/fragment_films_options" >
+        <action
+            android:id="@+id/action_filmsOptions_to_filmsTable"
+            app:destination="@id/filmsTable" />
+    </fragment>
+    <fragment
+        android:id="@+id/filmsTable"
+        android:name="com.example.android_sqlite.FilmsTable"
+        android:label="fragment_films_table"
+        tools:layout="@layout/fragment_films_table" />
+</navigation>

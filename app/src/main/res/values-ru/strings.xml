@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Android_SQLite</string>
+    <string name="films_add_and_find">Список фильмов</string>
+    <string name="add_film">Добавить фильм</string>
+    <string name="films_table_see">таблица фильмов</string>
+</resources>

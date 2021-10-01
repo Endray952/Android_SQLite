@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-    override fun onResume() {
+    /*override fun onResume() {
         super.onResume()
         data_base_manager.openDb()
         val data_list = data_base_manager.readDB()
@@ -34,5 +34,5 @@ class MainActivity : AppCompatActivity() {
             binding.Test.append(item)
             binding.Test.append("\n")
         }
-    }
+    }*/
 }
