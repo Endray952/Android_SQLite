@@ -15,6 +15,7 @@ import androidx.navigation.NavController
 
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import com.example.android_sqlite.data_base.FilmsType
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,9 +27,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.host) as NavHostFragment
         navController = navHostFragment.findNavController()
         binding.botNav.setupWithNavController(navController)
+       // deleteDatabase("VideoRent.db")
+        data_base_manager.openDb()
         //setUpNavigation()
     }
 
@@ -55,5 +59,10 @@ class MainActivity : AppCompatActivity() {
         //val navController = findNavController(R.id.)
         //binding.botNav.setupWithNavController(navController)
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        data_base_manager.closeDb()
     }
 }
