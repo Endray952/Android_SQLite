@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/filmsOptions"
-        android:name="com.example.android_sqlite.FilmsOptions"
+        android:name="com.example.android_sqlite.Films.FilmsOptions"
         android:label="fragment_films_options"
         tools:layout="@layout/fragment_films_options" >
         <action
@@ -16,10 +16,13 @@
         <action
             android:id="@+id/action_filmsOptions_to_clientsOptions"
             app:destination="@id/clientsOptions" />
+        <action
+            android:id="@+id/action_filmsOptions_to_categoryTable"
+            app:destination="@id/categoryTable" />
     </fragment>
     <fragment
         android:id="@+id/filmsTable"
-        android:name="com.example.android_sqlite.FilmsTable"
+        android:name="com.example.android_sqlite.Films.FilmsTable"
         android:label="fragment_films_table"
         tools:layout="@layout/fragment_films_table" />
     <fragment
@@ -36,4 +39,9 @@
         android:name="com.example.android_sqlite.FinancesOptions"
         android:label="fragment_finances_options"
         tools:layout="@layout/fragment_finances_options" />
+    <fragment
+        android:id="@+id/categoryTable"
+        android:name="com.example.android_sqlite.Films.CategoryTable"
+        android:label="fragment_category_table"
+        tools:layout="@layout/fragment_category_table" />
 </navigation>

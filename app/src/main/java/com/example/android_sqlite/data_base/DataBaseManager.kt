@@ -15,7 +15,7 @@ class DataBaseManager(context: Context) {
         db = DbHelper.writableDatabase
         //db?.delete(DataBaseConsts.Films.TABLE_NAME, null, null);
     }
-    fun insertToDB(title: String, remain: Int = 0, category_ID: Int = 0, cassette_price : Double = 0.0){
+    fun insertFilmToDB(title: String, remain: Int = 0, category_ID: Int = 0, cassette_price : Double = 0.0){
         val values = ContentValues().apply {
             put(DataBaseConsts.Films.COLUMN_NAME_TITLE, title)
             put(DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN, remain)
@@ -24,7 +24,7 @@ class DataBaseManager(context: Context) {
         }
         db?.insert(DataBaseConsts.Films.TABLE_NAME, null, values)
     }
-    fun readDB() : ArrayList<FilmsType>{
+    fun readFilmsFromTable() : ArrayList<FilmsType>{
         //db?.execSQL("DROP TABLE "+ DataBaseConsts.Films.TABLE_NAME)
         val dataList = ArrayList<FilmsType>()
         val cursor = db?.query(DataBaseConsts.Films.TABLE_NAME, null, null, null, null, null, null, null )
@@ -39,6 +39,31 @@ class DataBaseManager(context: Context) {
         cursor.close()
         return  dataList
     }
+
+    fun insertCategoryToDB(title: String = "", tariff : Double = 0.0){
+        val values = ContentValues().apply {
+            put(DataBaseConsts.Categories.COLUMN_NAME_TITLE, title)
+            put(DataBaseConsts.Categories.COLUMN_NAME_TARIFF, tariff)
+        }
+        db?.insert(DataBaseConsts.Categories.TABLE_NAME, null, values)
+    }
+    fun readCategoriesFromTable() : ArrayList<CategoryType>{
+        //db?.execSQL("DROP TABLE "+ DataBaseConsts.Films.TABLE_NAME)
+        val dataList = ArrayList<CategoryType>()
+        val cursor = db?.query(DataBaseConsts.Categories.TABLE_NAME, null, null, null, null, null, null, null )
+        while (cursor?.moveToNext()!!){
+            val data = CategoryType()
+            data.ID = cursor?.getInt(cursor.getColumnIndex(BaseColumns._ID))
+            data.title = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TITLE))
+            data.tariff = cursor?.getDouble(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TARIFF))
+            dataList.add(data)
+        }
+        cursor.close()
+        return  dataList
+    }
+
+
+
 
     fun closeDb(){
         DbHelper.close()

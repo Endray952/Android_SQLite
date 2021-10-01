@@ -27,12 +27,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.host) as NavHostFragment
         navController = navHostFragment.findNavController()
         binding.botNav.setupWithNavController(navController)
-       // deleteDatabase("VideoRent.db")
-        data_base_manager.openDb()
+        //Thread {
+            data_base_manager.openDb()
+        //}.start()
+
         //setUpNavigation()
     }
 

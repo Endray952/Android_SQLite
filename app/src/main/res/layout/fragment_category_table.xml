@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Films.FilmsTable">
+    tools:context=".Films.CategoryTable">
 
     <HorizontalScrollView
         android:layout_width="match_parent"
@@ -16,10 +16,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/RecyclerView"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/RecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
     </HorizontalScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
