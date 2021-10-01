@@ -4,16 +4,32 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.android_sqlite.data_base.DataBaseManager
 import com.example.android_sqlite.databinding.ActivityMainBinding
+import androidx.navigation.ui.NavigationUI
+
+
+import androidx.navigation.NavController
+
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding : ActivityMainBinding
+    private lateinit var navController: NavController
     val data_base_manager = DataBaseManager(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.host) as NavHostFragment
+        navController = navHostFragment.findNavController()
+        binding.botNav.setupWithNavController(navController)
+        //setUpNavigation()
     }
 
     /*override fun onResume() {
@@ -35,4 +51,9 @@ class MainActivity : AppCompatActivity() {
             binding.Test.append("\n")
         }
     }*/
+    private fun setUpNavigation(){
+        //val navController = findNavController(R.id.)
+        //binding.botNav.setupWithNavController(navController)
+
+    }
 }

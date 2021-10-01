@@ -21,6 +21,8 @@ class FilmsOptions : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val botNav = (activity as MainActivity).findViewById<View>(R.id.botNav)
+        botNav.visibility = View.VISIBLE
         with(binding){
             AddFilm.setOnClickListener{
 

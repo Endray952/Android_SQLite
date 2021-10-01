@@ -13,10 +13,27 @@
         <action
             android:id="@+id/action_filmsOptions_to_filmsTable"
             app:destination="@id/filmsTable" />
+        <action
+            android:id="@+id/action_filmsOptions_to_clientsOptions"
+            app:destination="@id/clientsOptions" />
     </fragment>
     <fragment
         android:id="@+id/filmsTable"
         android:name="com.example.android_sqlite.FilmsTable"
         android:label="fragment_films_table"
         tools:layout="@layout/fragment_films_table" />
+    <fragment
+        android:id="@+id/clientsOptions"
+        android:name="com.example.android_sqlite.ClientsOptions"
+        android:label="fragment_clients_options"
+        tools:layout="@layout/fragment_clients_options" >
+        <action
+            android:id="@+id/action_clientsOptions_to_financesOptions"
+            app:destination="@id/financesOptions" />
+    </fragment>
+    <fragment
+        android:id="@+id/financesOptions"
+        android:name="com.example.android_sqlite.FinancesOptions"
+        android:label="fragment_finances_options"
+        tools:layout="@layout/fragment_finances_options" />
 </navigation>

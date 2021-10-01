@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/filmsOptions"
+        android:icon="@drawable/films"
+        android:title="Films" />
+    <item
+        android:id="@+id/clientsOptions"
+        android:icon="@drawable/clients"
+        android:title="Clients" />
+    <item
+        android:id="@+id/financesOptions"
+        android:icon="@drawable/finances"
+        android:title="Finances" />
+</menu>
