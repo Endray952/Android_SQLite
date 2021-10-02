@@ -10,16 +10,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.android_sqlite.MainActivity
 import com.example.android_sqlite.R
-import com.example.android_sqlite.databinding.AddCategoryBinding
-import com.example.android_sqlite.databinding.AddFilmBinding
-import com.example.android_sqlite.databinding.FragmentFilmsOptionsBinding
+import com.example.android_sqlite.data_base.FilmsType
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.view.inputmethod.InputMethodManager
+import com.example.android_sqlite.data_base.FindFilmType
+import com.example.android_sqlite.databinding.*
 
 
 class FilmsOptions : Fragment() {
     private lateinit var binding: FragmentFilmsOptionsBinding
-
+    private val adapter = FilmsFoundAdapter()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         binding = FragmentFilmsOptionsBinding.inflate(inflater)
@@ -30,6 +34,10 @@ class FilmsOptions : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val botNav = (activity as MainActivity).findViewById<View>(R.id.botNav)
         botNav.visibility = View.VISIBLE
+
+        binding.FoundFilmsRV.layoutManager = LinearLayoutManager(activity as MainActivity)
+        binding.FoundFilmsRV.adapter = adapter
+
         with(binding){
             AddFilm.setOnClickListener{
                 addFilmDialog(activity as MainActivity, layoutInflater)
@@ -42,6 +50,22 @@ class FilmsOptions : Fragment() {
             }
             CategoryTable.setOnClickListener {
                 findNavController().navigate(R.id.action_filmsOptions_to_categoryTable)
+            }
+            FindFilmBtn.setOnClickListener {
+                val found_films : ArrayList<FindFilmType> = arrayListOf()
+                found_films.addAll((activity as MainActivity).data_base_manager.findFilmWithTitle(FindFilmName.text.toString()))
+                if (found_films.isEmpty()){
+                    FindFilmName.setText("No such film")
+                    FoundFilmsRV.visibility = View.GONE
+                }
+                else{
+                    FoundFilmsRV.visibility = View.VISIBLE
+                    found_films.add(0, FindFilmType())
+                    adapter.addAll(found_films)
+                }
+                val imm: InputMethodManager =
+                    requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(requireActivity().currentFocus!!.windowToken, 0)
             }
         }
     }
@@ -75,6 +99,46 @@ class FilmsOptions : Fragment() {
         }
         binding.AddBtn.setOnClickListener {
             (activity as MainActivity).data_base_manager.insertCategoryToDB(binding.Category.text.toString(), binding.Tariff.text.toString().toDouble())
+        }
+    }
+    inner class FilmsFoundAdapter : RecyclerView.Adapter<FilmsFoundAdapter.FilmsFoundHolder>() {
+
+        val table_content: ArrayList<FindFilmType> = arrayListOf()
+
+        inner class FilmsFoundHolder(item: View) : RecyclerView.ViewHolder(item) {
+            val binding = FoundFilmsTableBinding.bind(item)
+
+            fun bind(table_content: FindFilmType) = with(binding) {
+                //ID.text = table_content.ID.toString()
+                Title.text = table_content.title
+                Category.text = table_content.category
+                Remain.text = table_content.remain.toString()
+                WillBeAvailable.text = "-"//table_content.category_ID.toString()
+                Price.text = table_content.price.toString()
+            }
+        }
+
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilmsFoundHolder {
+            val view =
+                LayoutInflater.from(parent.context).inflate(R.layout.found_films_table, parent, false)
+            return FilmsFoundHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: FilmsFoundHolder, position: Int) {
+            if (position != 0) {
+                holder.bind(table_content[position])
+            }
+        }
+
+        override fun getItemCount(): Int {
+            return table_content.size
+        }
+
+        fun addAll(data: List<FindFilmType>) {
+            this.table_content.clear()
+            this.table_content.addAll(data)
+            notifyDataSetChanged()
         }
     }
 }
