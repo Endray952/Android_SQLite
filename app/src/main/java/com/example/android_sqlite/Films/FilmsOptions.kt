@@ -57,7 +57,9 @@ class FilmsOptions : Fragment() {
             dialog.dismiss()
         }
         binding.AddBtn.setOnClickListener {
-            (activity as MainActivity).data_base_manager.insertFilmToDB(binding.Title.text.toString(), binding.Remain.text.toString().toInt(), binding.Category.text.toString().toInt(), binding.Price.text.toString().toDouble())
+            (activity as MainActivity).data_base_manager.insertFilmToDB(title = binding.Title.text.toString(),
+                remain = binding.Remain.text.toString().toInt(), category_ID = binding.Category.text.toString().toInt(),
+                cassette_price = binding.Price.text.toString().toDouble())
         }
     }
     private fun addCategoryDialog(context: Context, inflater: LayoutInflater){
