@@ -14,10 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android_sqlite.MainActivity
 import com.example.android_sqlite.R
-import com.example.android_sqlite.data_base.FilmsType
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.inputmethod.InputMethodManager
-import com.example.android_sqlite.data_base.FindFilmType
 import com.example.android_sqlite.databinding.*
 
 

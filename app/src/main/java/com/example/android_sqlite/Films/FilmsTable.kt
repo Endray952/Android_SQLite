@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android_sqlite.MainActivity
 import com.example.android_sqlite.R
-import com.example.android_sqlite.data_base.FilmsType
 import com.example.android_sqlite.databinding.FilmsTableBinding
 import com.example.android_sqlite.databinding.FragmentFilmsTableBinding
 

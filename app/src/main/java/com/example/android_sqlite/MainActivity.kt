@@ -2,20 +2,15 @@ package com.example.android_sqlite
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.TextView
-import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.android_sqlite.data_base.DataBaseManager
 import com.example.android_sqlite.databinding.ActivityMainBinding
-import androidx.navigation.ui.NavigationUI
 
 
 import androidx.navigation.NavController
 
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import com.example.android_sqlite.data_base.FilmsType
 
 
 class MainActivity : AppCompatActivity() {

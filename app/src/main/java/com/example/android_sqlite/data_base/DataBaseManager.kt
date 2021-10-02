@@ -1,8 +1,9 @@
 package com.example.android_sqlite.data_base
 
-import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import com.example.android_sqlite.Films.FilmsType
+import com.example.android_sqlite.Films.FindFilmType
 
 class DataBaseManager(context: Context) {
     val DbHelper = DataBaseHelper(context)
@@ -60,9 +61,7 @@ class DataBaseManager(context: Context) {
 
         while (cursor?.moveToNext()!!){
             val data = FindFilmType()
-            //data.ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Films.ID))
             data.title = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_TITLE))
-           // data.category_ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID))
             data.remain = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN))
             data.price = cursor?.getDouble(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_CASSETTE_PRICE))
 
