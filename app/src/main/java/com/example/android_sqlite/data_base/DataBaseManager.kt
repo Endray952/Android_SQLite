@@ -2,6 +2,7 @@ package com.example.android_sqlite.data_base
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import com.example.android_sqlite.ClientType
 import com.example.android_sqlite.Films.FilmsType
 import com.example.android_sqlite.Films.FindFilmType
 
@@ -78,6 +79,26 @@ class DataBaseManager(context: Context) {
         return found_films
     }
 
+    fun insertClientToDB(first_name: String, second_name: String, email: String, phone_number: Int){
+        db?.execSQL("INSERT INTO " + DataBaseConsts.Customers.TABLE_NAME +"(${DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_FIRST_NAME}, " +
+                "${DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_SECOND_NAME}, ${DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_EMAIL}, " +
+                "${DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_PHONE_NUMBER})" + " VALUES('$first_name', '$second_name', '$email', '$phone_number')")
+    }
+    fun readClientsFromTable(): ArrayList<ClientType>{
+        val dataList = ArrayList<ClientType>()
+        val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Customers.TABLE_NAME}", null)
+        while (cursor?.moveToNext()!!){
+            val data = ClientType()
+            data.ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Customers.ID))
+            data.first_name = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_FIRST_NAME))
+            data.second_name = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_SECOND_NAME))
+            data.email = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_EMAIL))
+            data.phone_number = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_PHONE_NUMBER))
+            dataList.add(data)
+        }
+        cursor.close()
+        return  dataList
+    }
 
     fun closeDb(){
         DbHelper.close()

@@ -3,73 +3,74 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <EditText
-        android:id="@+id/editTextTextPersonName4"
+        android:id="@+id/FisrstName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Имя"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName5"
+        app:layout_constraintBottom_toTopOf="@+id/SecondName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName5"
+        android:id="@+id/SecondName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Фамилия"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName6"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName4"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName4"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName4" />
+        app:layout_constraintBottom_toTopOf="@+id/Email"
+        app:layout_constraintEnd_toEndOf="@+id/FisrstName"
+        app:layout_constraintStart_toStartOf="@+id/FisrstName"
+        app:layout_constraintTop_toBottomOf="@+id/FisrstName" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName6"
+        android:id="@+id/Email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Эл. почта"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName7"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName5"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName5"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName5" />
+        app:layout_constraintBottom_toTopOf="@+id/PhoneNumber"
+        app:layout_constraintEnd_toEndOf="@+id/SecondName"
+        app:layout_constraintStart_toStartOf="@+id/SecondName"
+        app:layout_constraintTop_toBottomOf="@+id/SecondName" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName7"
+        android:id="@+id/PhoneNumber"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Номер телеофна"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName6"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName6"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName6" />
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/Email"
+        app:layout_constraintStart_toStartOf="@+id/Email"
+        app:layout_constraintTop_toBottomOf="@+id/Email" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/Cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Отмена"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName7" />
+        app:layout_constraintTop_toBottomOf="@+id/PhoneNumber" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/Add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Добавить"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName7" />
+        app:layout_constraintTop_toBottomOf="@+id/PhoneNumber" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"

@@ -33,6 +33,9 @@
         <action
             android:id="@+id/action_clientsOptions_to_financesOptions"
             app:destination="@id/financesOptions" />
+        <action
+            android:id="@+id/action_clientsOptions_to_clientsTable"
+            app:destination="@id/clientsTable" />
     </fragment>
     <fragment
         android:id="@+id/financesOptions"
@@ -44,4 +47,9 @@
         android:name="com.example.android_sqlite.Films.CategoryTable"
         android:label="fragment_category_table"
         tools:layout="@layout/fragment_category_table" />
+    <fragment
+        android:id="@+id/clientsTable"
+        android:name="com.example.android_sqlite.ClientsTable"
+        android:label="fragment_clients_table"
+        tools:layout="@layout/fragment_clients_table" />
 </navigation>

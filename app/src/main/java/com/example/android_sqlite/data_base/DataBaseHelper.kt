@@ -8,11 +8,16 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DataBaseConst
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(DataBaseConsts.SQL_CREATE_FILMS_TABLE)
         db?.execSQL(DataBaseConsts.SQL_CREATE_CATEGORIES_TABLE)
+        db?.execSQL(DataBaseConsts.SQL_CREATE_CUSTOMERS_TABLE)
+        db?.execSQL(DataBaseConsts.SQL_CREATE_ORDERS_TABLE)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         db?.execSQL(DataBaseConsts.SQL_DELETE_FILMS_TABLE)
         db?.execSQL(DataBaseConsts.SQL_DELETE_CATEGORIES_TABLE)
+        db?.execSQL(DataBaseConsts.SQL_DELETE_CUSTOMERS_TABLE)
+        db?.execSQL(DataBaseConsts.SQL_DELETE_ORDERS_TABLE)
+
         onCreate(db);
     }
 }

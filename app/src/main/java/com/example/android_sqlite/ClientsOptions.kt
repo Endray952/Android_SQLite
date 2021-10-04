@@ -9,7 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
 import com.example.android_sqlite.databinding.AddCategoryBinding
+import com.example.android_sqlite.databinding.AddClientBinding
 import com.example.android_sqlite.databinding.FragmentClientsOptionsBinding
 import com.example.android_sqlite.databinding.FragmentFilmsOptionsBinding
 
@@ -30,24 +32,27 @@ class ClientsOptions : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         with(binding){
             AddClient.setOnClickListener {
-
+                addClientDialog((activity as MainActivity), layoutInflater)
+            }
+            ClientsTable.setOnClickListener {
+                findNavController().navigate(R.id.action_clientsOptions_to_clientsTable)
             }
         }
     }
 
     private fun addClientDialog(context: Context, inflater: LayoutInflater){
         val mBuilder = AlertDialog.Builder(context)
-        val mView = inflater.inflate(R.layout.add_category, null)
-        val binding = AddCategoryBinding.bind(mView)
+        val mView = inflater.inflate(R.layout.add_client, null)
+        val binding = AddClientBinding.bind(mView)
         mBuilder.setView(mView)
         val dialog: AlertDialog = mBuilder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
-        binding.CancelBtn.setOnClickListener {
+        binding.Cancel.setOnClickListener {
             dialog.dismiss()
         }
-        binding.AddBtn.setOnClickListener {
-            (activity as MainActivity).data_base_manager.insertCategoryToDB(binding.Category.text.toString(), binding.Tariff.text.toString().toDouble())
+        binding.Add.setOnClickListener {
+            (activity as MainActivity).data_base_manager.insertClientToDB(binding.FisrstName.text.toString(), binding.SecondName.text.toString(), binding.Email.text.toString(), binding.PhoneNumber.text.toString().trim().toInt())
         }
     }
 }
