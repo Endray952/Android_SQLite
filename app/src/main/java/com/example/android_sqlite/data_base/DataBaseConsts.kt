@@ -2,7 +2,7 @@ package com.example.android_sqlite.data_base
 
 object DataBaseConsts {
     const val  DATABASE_NAME = "VideoRent.db"
-    const val  DATABASE_VERSION = 17
+    const val  DATABASE_VERSION = 18
 
     object Films {
         const val ID = "_id"
@@ -19,7 +19,7 @@ object DataBaseConsts {
         const val COLUMN_NAME_TARIFF = "tariff"
     }
     object Orders {
-        const val ID = "_id"
+        const val ID = "_order_id"
         const val TABLE_NAME = "Orders"
         const val COLUMN_NAME_FILM_ID = "film_id"
         const val COLUMN_NAME_CUSTOMER_ID = "customer_id"
@@ -55,9 +55,9 @@ object DataBaseConsts {
                 "${Orders.ID} INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "${Orders.COLUMN_NAME_FILM_ID} INTEGER NOT NULL," +
                 "${Orders.COLUMN_NAME_CUSTOMER_ID} INTEGER NOT NULL," +
-                "${Orders.COLUMN_NAME_START_OF_RENT} TEXT NOT NULL," +
-                "${Orders.COLUMN_NAME_END_OF_RENT} TEXT NOT NULL," +
-                "${Orders.COLUMN_NAME_FLAG_NOT_RETURNED} REAL NOT NULL)"
+                "${Orders.COLUMN_NAME_START_OF_RENT} INTEGER NOT NULL," +
+                "${Orders.COLUMN_NAME_END_OF_RENT} INTEGER NOT NULL," +
+                "${Orders.COLUMN_NAME_FLAG_NOT_RETURNED} INTEGER)"
 
     const val SQL_CREATE_CUSTOMERS_TABLE =
         "CREATE TABLE IF NOT EXISTS ${Customers.TABLE_NAME} (" +

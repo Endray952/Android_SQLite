@@ -2,9 +2,10 @@ package com.example.android_sqlite.data_base
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import com.example.android_sqlite.ClientType
+import com.example.android_sqlite.CustomerType
 import com.example.android_sqlite.Films.FilmsType
 import com.example.android_sqlite.Films.FindFilmType
+import com.example.android_sqlite.OrderType
 
 class DataBaseManager(context: Context) {
     val DbHelper = DataBaseHelper(context)
@@ -84,11 +85,11 @@ class DataBaseManager(context: Context) {
                 "${DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_SECOND_NAME}, ${DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_EMAIL}, " +
                 "${DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_PHONE_NUMBER})" + " VALUES('$first_name', '$second_name', '$email', '$phone_number')")
     }
-    fun readClientsFromTable(): ArrayList<ClientType>{
-        val dataList = ArrayList<ClientType>()
+    fun readClientsFromTable(): ArrayList<CustomerType>{
+        val dataList = ArrayList<CustomerType>()
         val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Customers.TABLE_NAME}", null)
         while (cursor?.moveToNext()!!){
-            val data = ClientType()
+            val data = CustomerType()
             data.ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Customers.ID))
             data.first_name = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_FIRST_NAME))
             data.second_name = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_SECOND_NAME))
@@ -100,6 +101,27 @@ class DataBaseManager(context: Context) {
         return  dataList
     }
 
+    fun insertOrderToDB(film_ID: Int, customer_ID: Int, start_of_rent: Int, end_of_rent: Int){
+        db?.execSQL("INSERT INTO " + DataBaseConsts.Orders.TABLE_NAME +"(${DataBaseConsts.Orders.COLUMN_NAME_FILM_ID}, " +
+                "${DataBaseConsts.Orders.COLUMN_NAME_CUSTOMER_ID}, ${DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT}, " +
+                "${DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT})" + " VALUES('$film_ID', '$customer_ID', '$start_of_rent', '$end_of_rent')")
+
+    }
+    fun readOrdersFromTable(): ArrayList<OrderType>{
+        val dataList = ArrayList<OrderType>()
+        val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Orders.TABLE_NAME}", null)
+        while (cursor?.moveToNext()!!){
+            val data = OrderType()
+            data.ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.ID))
+            data.film_ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_FILM_ID))
+            data.customer_ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_CUSTOMER_ID))
+            data.start_of_rent = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT))
+            data.end_of_rent = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT))
+            dataList.add(data)
+        }
+        cursor.close()
+        return  dataList
+    }
     fun closeDb(){
         DbHelper.close()
     }

@@ -11,13 +11,15 @@ import androidx.navigation.NavController
 
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import java.time.Month
 
+class Date(var day: Int, var month: Int, var year: Int)
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding : ActivityMainBinding
     private lateinit var navController: NavController
     val data_base_manager = DataBaseManager(this)
-
+    var current_date = Date(1, 1, 2021)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -25,32 +27,13 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.host) as NavHostFragment
         navController = navHostFragment.findNavController()
         binding.botNav.setupWithNavController(navController)
-        //Thread {
-            data_base_manager.openDb()
-        //}.start()
+
+        data_base_manager.openDb()
 
         //setUpNavigation()
     }
 
-    /*override fun onResume() {
-        super.onResume()
-        data_base_manager.openDb()
-        val data_list = data_base_manager.readDB()
-        for(item in data_list){
-            binding.Test.append(item)
-            binding.Test.append("\n")
-        }
-    }
-    fun onClickSave(view: View){
-        binding.Test.text = ""
-        data_base_manager.openDb()
-        data_base_manager.insertToDB(binding.Title.text.toString(), binding.Content.text.toString().toInt())
-        val data_list = data_base_manager.readDB()
-        for(item in data_list){
-            binding.Test.append(item)
-            binding.Test.append("\n")
-        }
-    }*/
+
     private fun setUpNavigation(){
         //val navController = findNavController(R.id.)
         //binding.botNav.setupWithNavController(navController)

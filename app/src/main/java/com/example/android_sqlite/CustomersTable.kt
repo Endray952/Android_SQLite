@@ -7,16 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android_sqlite.Films.FilmsType
-import com.example.android_sqlite.Films.FindFilmType
-import com.example.android_sqlite.databinding.ClientsTableBinding
-import com.example.android_sqlite.databinding.FoundFilmsTableBinding
-import com.example.android_sqlite.databinding.FragmentClientsTableBinding
-import com.example.android_sqlite.databinding.FragmentFilmsTableBinding
+import com.example.android_sqlite.databinding.*
 
 
-class ClientsTable : Fragment() {
-    private lateinit var binding: FragmentClientsTableBinding
+class CustomersTable : Fragment() {
+    private lateinit var binding: FragmentCustomersTableBinding
     private val adapter = ClientsTableAdapter()
 
     override fun onCreateView(
@@ -24,7 +19,7 @@ class ClientsTable : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentClientsTableBinding.inflate(inflater)
+        binding = FragmentCustomersTableBinding.inflate(inflater)
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,8 +30,8 @@ class ClientsTable : Fragment() {
         binding.RecyclerView.layoutManager = LinearLayoutManager(activity as MainActivity)
         binding.RecyclerView.adapter = adapter
 
-        val data_list = ArrayList<ClientType>(1)
-        data_list.add(ClientType())
+        val data_list = ArrayList<CustomerType>(1)
+        data_list.add(CustomerType())
         data_list.addAll((activity as MainActivity).data_base_manager.readClientsFromTable())
 
         //data_list.addAll(1,(activity as MainActivity).data_base_manager.readDB())
@@ -45,12 +40,12 @@ class ClientsTable : Fragment() {
 
     inner class ClientsTableAdapter : RecyclerView.Adapter<ClientsTableAdapter.ClientsTableHolder>() {
 
-        val table_content: ArrayList<ClientType> = arrayListOf()
+        val table_content: ArrayList<CustomerType> = arrayListOf()
 
         inner class ClientsTableHolder(item: View) : RecyclerView.ViewHolder(item) {
-            val binding = ClientsTableBinding.bind(item)
+            val binding = CustomersTableBinding.bind(item)
 
-            fun bind(table_content: ClientType) = with(binding) {
+            fun bind(table_content: CustomerType) = with(binding) {
                 ID.text = table_content.ID.toString()
                 FirstName.text = table_content.first_name
                 SecondName.text = table_content.second_name
@@ -62,7 +57,7 @@ class ClientsTable : Fragment() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClientsTableHolder {
             val view =
-                LayoutInflater.from(parent.context).inflate(R.layout.clients_table, parent, false)
+                LayoutInflater.from(parent.context).inflate(R.layout.customers_table, parent, false)
             return ClientsTableHolder(view)
         }
 
@@ -76,7 +71,7 @@ class ClientsTable : Fragment() {
             return table_content.size
         }
 
-        fun addAll(data: List<ClientType>) {
+        fun addAll(data: List<CustomerType>) {
             this.table_content.clear()
             this.table_content.addAll(data)
             notifyDataSetChanged()
