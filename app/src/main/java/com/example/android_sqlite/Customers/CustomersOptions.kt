@@ -1,4 +1,4 @@
-package com.example.android_sqlite
+package com.example.android_sqlite.Customers
 
 import android.content.Context
 import android.graphics.Color
@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
+import com.example.android_sqlite.MainActivity
+import com.example.android_sqlite.R
 import com.example.android_sqlite.databinding.*
 
 
@@ -27,7 +29,12 @@ class CustomersOptions : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val botNav = (activity as MainActivity).findViewById<View>(R.id.botNav)
+        botNav.visibility = View.VISIBLE
         with(binding){
+            (activity as MainActivity).current_date.day = Day.text.toString().toInt()
+            (activity as MainActivity).current_date.month = Month.text.toString().toInt()
+            (activity as MainActivity).current_date.year = Year.text.toString().toInt()
             UpdateDate.setOnClickListener {
                 (activity as MainActivity).current_date.day = Day.text.toString().toInt()
                 (activity as MainActivity).current_date.month = Month.text.toString().toInt()

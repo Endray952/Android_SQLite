@@ -1,4 +1,4 @@
-package com.example.android_sqlite
+package com.example.android_sqlite.Customers
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android_sqlite.MainActivity
+import com.example.android_sqlite.R
 import com.example.android_sqlite.databinding.*
 
 

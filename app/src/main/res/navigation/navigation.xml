@@ -27,7 +27,7 @@
         tools:layout="@layout/fragment_films_table" />
     <fragment
         android:id="@+id/clientsOptions"
-        android:name="com.example.android_sqlite.CustomersOptions"
+        android:name="com.example.android_sqlite.Customers.CustomersOptions"
         android:label="fragment_clients_options"
         tools:layout="@layout/fragment_customers_options" >
         <action
@@ -52,12 +52,12 @@
         tools:layout="@layout/fragment_category_table" />
     <fragment
         android:id="@+id/clientsTable"
-        android:name="com.example.android_sqlite.CustomersTable"
+        android:name="com.example.android_sqlite.Customers.CustomersTable"
         android:label="fragment_clients_table"
         tools:layout="@layout/fragment_customers_table" />
     <fragment
         android:id="@+id/ordersTable"
-        android:name="com.example.android_sqlite.OrdersTable"
+        android:name="com.example.android_sqlite.Customers.OrdersTable"
         android:label="fragment_orders_table"
         tools:layout="@layout/fragment_orders_table" />
 </navigation>

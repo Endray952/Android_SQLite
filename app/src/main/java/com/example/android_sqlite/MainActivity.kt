@@ -3,7 +3,7 @@ package com.example.android_sqlite
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.ui.setupWithNavController
-import com.example.android_sqlite.data_base.DataBaseManager
+import com.example.android_sqlite.DataBase.DataBaseManager
 import com.example.android_sqlite.databinding.ActivityMainBinding
 
 
@@ -11,7 +11,6 @@ import androidx.navigation.NavController
 
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import java.time.Month
 
 class Date(var day: Int, var month: Int, var year: Int)
 

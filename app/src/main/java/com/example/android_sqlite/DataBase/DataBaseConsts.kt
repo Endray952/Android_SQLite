@@ -1,4 +1,4 @@
-package com.example.android_sqlite.data_base
+package com.example.android_sqlite.DataBase
 
 object DataBaseConsts {
     const val  DATABASE_NAME = "VideoRent.db"

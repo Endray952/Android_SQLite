@@ -1,11 +1,12 @@
-package com.example.android_sqlite.data_base
+package com.example.android_sqlite.DataBase
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import com.example.android_sqlite.CustomerType
+import com.example.android_sqlite.Customers.CustomerType
 import com.example.android_sqlite.Films.FilmsType
 import com.example.android_sqlite.Films.FindFilmType
-import com.example.android_sqlite.OrderType
+import com.example.android_sqlite.Customers.OrderType
+import com.example.android_sqlite.Films.CategoryType
 
 class DataBaseManager(context: Context) {
     val DbHelper = DataBaseHelper(context)
