@@ -16,12 +16,17 @@ import com.example.android_sqlite.MainActivity
 import com.example.android_sqlite.R
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
 import com.example.android_sqlite.databinding.*
 
 
-class FilmsOptions : Fragment() {
+class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
     private lateinit var binding: FragmentFilmsOptionsBinding
     private val adapter = FilmsFoundAdapter()
+    //private val add_film_cat_spinner = Spinner(requireActivity());
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         binding = FragmentFilmsOptionsBinding.inflate(inflater)
@@ -67,23 +72,49 @@ class FilmsOptions : Fragment() {
             }
         }
     }
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        selected_cat_pos = parent?.selectedItemPosition
+        selected_cat_pos = if (selected_cat_pos!= null ) selected_cat_pos!! + 1 else null
+
+    }
+    private var selected_cat_pos: Int? = null
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        TODO("Not yet implemented")
+    }
     private fun addFilmDialog(context: Context, inflater: LayoutInflater){
         val mBuilder = AlertDialog.Builder(context)
         val mView = inflater.inflate(R.layout.add_film, null)
         val binding = AddFilmBinding.bind(mView)
         mBuilder.setView(mView)
         val dialog: AlertDialog = mBuilder.create()
+
+        val categories_list = (activity as MainActivity).data_base_manager.readCategoriesFromTable()
+        val categories_titles = ArrayList<String>()
+        categories_titles.add("Выберите категорию")
+        for (elem in categories_list){
+            categories_titles.add(elem.title)
+        }
+
+        val spinner_adapter = ArrayAdapter(activity as MainActivity, android.R.layout.simple_spinner_dropdown_item, categories_titles)
+        binding.Category.adapter = spinner_adapter
+        binding.Category.onItemSelectedListener = this
+
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
         binding.CancelBtn.setOnClickListener {
             dialog.dismiss()
         }
         binding.AddBtn.setOnClickListener {
-            (activity as MainActivity).data_base_manager.insertFilmToDB(title = binding.Title.text.toString(),
-                remain = binding.Remain.text.toString().toInt(), category_ID = binding.Category.text.toString().toInt(),
-                cassette_price = binding.Price.text.toString().toDouble())
+            if(selected_cat_pos != null) {
+                (activity as MainActivity).data_base_manager.insertFilmToDB(
+                    title = binding.Title.text.toString(),
+                    remain = binding.Remain.text.toString().toInt(), category_ID = selected_cat_pos!!,
+                    cassette_price = binding.Price.text.toString().toDouble()
+                )
+            }
         }
     }
+
     private fun addCategoryDialog(context: Context, inflater: LayoutInflater){
         val mBuilder = AlertDialog.Builder(context)
         val mView = inflater.inflate(R.layout.add_category, null)
@@ -139,4 +170,6 @@ class FilmsOptions : Fragment() {
             notifyDataSetChanged()
         }
     }
+
+
 }

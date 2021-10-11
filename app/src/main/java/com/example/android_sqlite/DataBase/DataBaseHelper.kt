@@ -10,6 +10,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DataBaseConst
         db?.execSQL(DataBaseConsts.SQL_CREATE_CATEGORIES_TABLE)
         db?.execSQL(DataBaseConsts.SQL_CREATE_CUSTOMERS_TABLE)
         db?.execSQL(DataBaseConsts.SQL_CREATE_ORDERS_TABLE)
+        db?.execSQL(DataBaseConsts.SQL_CREATE_DATE_TABLE)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -17,7 +18,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DataBaseConst
         db?.execSQL(DataBaseConsts.SQL_DELETE_CATEGORIES_TABLE)
         db?.execSQL(DataBaseConsts.SQL_DELETE_CUSTOMERS_TABLE)
         db?.execSQL(DataBaseConsts.SQL_DELETE_ORDERS_TABLE)
-
+        db?.execSQL(DataBaseConsts.SQL_DELETE_DATE_TABLE)
         onCreate(db);
     }
 }

@@ -15,6 +15,14 @@ class DataBaseManager(context: Context) {
         db = DbHelper.writableDatabase
         //db?.delete(DataBaseConsts.Films.TABLE_NAME, null, null);
     }
+    fun setDate(day: Int, month: Int, year: Int){
+        val date = "$day/$month/$year"
+        //db?.execSQL("INSERT INTO  ${DataBaseConsts.Date.TABLE_NAME} (${DataBaseConsts.Date.DATE}) VALUES('$date')")
+        db?.execSQL("UPDATE  ${DataBaseConsts.Date.TABLE_NAME} SET (${DataBaseConsts.Date.DATE}) = '$date'")
+    }
+    fun getDate(){
+
+    }
     fun insertFilmToDB(title: String, remain: Int = 0, category_ID: Int = 0, cassette_price : Double = 0.0){
         db?.execSQL("INSERT INTO " + DataBaseConsts.Films.TABLE_NAME+"(${DataBaseConsts.Films.COLUMN_NAME_TITLE}, " +
                 "${DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN}, ${DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID}, " +
@@ -44,7 +52,6 @@ class DataBaseManager(context: Context) {
     }
 
     fun readCategoriesFromTable() : ArrayList<CategoryType>{
-        //db?.execSQL("DROP TABLE "+ DataBaseConsts.Films.TABLE_NAME)
         val dataList = ArrayList<CategoryType>()
         val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Categories.TABLE_NAME}", null)
         while (cursor?.moveToNext()!!){
@@ -60,22 +67,26 @@ class DataBaseManager(context: Context) {
 
     fun findFilmWithTitle(title: String) : ArrayList<FindFilmType>{
         var found_films = arrayListOf<FindFilmType>()
-        val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Films.TABLE_NAME} WHERE TRIM(${DataBaseConsts.Films.COLUMN_NAME_TITLE}) = '${title.trim()}'"
-            , null)
+       /* val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Films.TABLE_NAME} WHERE TRIM(${DataBaseConsts.Films.COLUMN_NAME_TITLE}) = '${title.trim()}'"
+            , null)*/
+        val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Films.TABLE_NAME} JOIN ${DataBaseConsts.Categories.TABLE_NAME} ON " +
+                    "${DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID} = ${DataBaseConsts.Categories.TABLE_NAME}.${DataBaseConsts.Categories.ID} " +
+                        "WHERE TRIM(${DataBaseConsts.Films.COLUMN_NAME_TITLE}) = '${title.trim()}'", null)
 
         while (cursor?.moveToNext()!!){
             val data = FindFilmType()
             data.title = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_TITLE))
             data.remain = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN))
             data.price = cursor?.getDouble(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_CASSETTE_PRICE))
-            val category_ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID))
+            data.category = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TITLE))
+           // val category_ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID))
             //Join category to film
-            val join_cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Categories.TABLE_NAME} WHERE ${DataBaseConsts.Categories.ID} = '${category_ID}'", null)
-            join_cursor?.moveToFirst()
-            data.category = join_cursor?.getString(join_cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TITLE)).toString()
+            //val join_cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Categories.TABLE_NAME} WHERE ${DataBaseConsts.Categories.ID} = '${category_ID}'", null)
+            //join_cursor?.moveToFirst()
+            //data.category = join_cursor?.getString(join_cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TITLE)).toString()
 
             found_films.add(data)
-            join_cursor?.close()
+            //join_cursor?.close()
         }
         cursor.close()
         return found_films
@@ -109,7 +120,7 @@ class DataBaseManager(context: Context) {
 
     }
     fun readOrdersFromTable(): ArrayList<OrderType>{
-        val dataList = ArrayList<OrderType>()
+        val data_list = ArrayList<OrderType>()
         val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Orders.TABLE_NAME}", null)
         while (cursor?.moveToNext()!!){
             val data = OrderType()
@@ -118,11 +129,14 @@ class DataBaseManager(context: Context) {
             data.customer_ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_CUSTOMER_ID))
             data.start_of_rent = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT))
             data.end_of_rent = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT))
-            dataList.add(data)
+            data_list.add(data)
         }
         cursor.close()
-        return  dataList
+        return  data_list
     }
+
+
+
     fun closeDb(){
         DbHelper.close()
     }

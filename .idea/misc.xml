@@ -1,5 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/drawable/table_background.xml" value="0.5703125" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout-land/films_table.xml" value="0.33" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/add_category.xml" value="0.33177083333333335" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/add_client.xml" value="0.4354166666666667" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/add_film.xml" value="0.5" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/add_order.xml" value="0.315625" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/category_table.xml" value="0.33177083333333335" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/clients_table.xml" value="0.359375" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/films_table.xml" value="0.5" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/found_films_table.xml" value="0.38177083333333334" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/fragment_category_table.xml" value="0.33177083333333335" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/fragment_clients_options.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/fragment_clients_table.xml" value="0.3453125" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/fragment_customers_options.xml" value="0.33177083333333335" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/fragment_films_options.xml" value="0.5" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/fragment_films_table.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/fragment_orders_table.xml" value="0.315625" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/orders_table.xml" value="0.315625" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/test.xml" value="0.3307291666666667" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/menu/bottom_nav.xml" value="0.29375" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

@@ -2,6 +2,7 @@ package com.example.android_sqlite
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.AdapterView
 import androidx.navigation.ui.setupWithNavController
 import com.example.android_sqlite.DataBase.DataBaseManager
 import com.example.android_sqlite.databinding.ActivityMainBinding

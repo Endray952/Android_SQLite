@@ -39,6 +39,7 @@ class CustomersOptions : Fragment() {
                 (activity as MainActivity).current_date.day = Day.text.toString().toInt()
                 (activity as MainActivity).current_date.month = Month.text.toString().toInt()
                 (activity as MainActivity).current_date.year = Year.text.toString().toInt()
+                (activity as MainActivity).data_base_manager.setDate(Day.text.toString().toInt(),Month.text.toString().toInt(), Year.text.toString().toInt())
             }
             AddClient.setOnClickListener {
                 addClientDialog((activity as MainActivity), layoutInflater)
