@@ -29,45 +29,79 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/FilmID" />
 
-    <EditText
-        android:id="@+id/StartOfRent"
+    <TextView
+        android:id="@+id/textView3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="начало аренды"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Начало аренды"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView7"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/CustomerID" />
 
-    <EditText
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Конец аренды"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/EndOfRent"
+        app:layout_constraintEnd_toStartOf="@+id/EndOfRent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/EndOfRent" />
+
+    <TextView
+        android:id="@+id/StartOfRent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/CustomerID" />
+
+    <TextView
         android:id="@+id/EndOfRent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Конец аренды"
-        android:inputType="textPersonName"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/EndOfRentButton"
+        app:layout_constraintEnd_toStartOf="@+id/EndOfRentButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toTopOf="@+id/EndOfRentButton" />
+
+    <Button
+        android:id="@+id/EndOfRentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Изменить"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/EndOfRent"
         app:layout_constraintTop_toBottomOf="@+id/StartOfRent" />
 
     <Button
         android:id="@+id/Cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
         android:text="Отмена"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/EndOfRent" />
+        app:layout_constraintTop_toBottomOf="@+id/EndOfRentButton" />
 
     <Button
         android:id="@+id/Add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
         android:text="Добавить"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline5"
-        app:layout_constraintTop_toBottomOf="@+id/EndOfRent" />
+        app:layout_constraintTop_toBottomOf="@+id/EndOfRentButton" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"
@@ -75,4 +109,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.32" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

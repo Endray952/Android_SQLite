@@ -6,6 +6,7 @@ import com.example.android_sqlite.Customers.CustomerType
 import com.example.android_sqlite.Films.FilmsType
 import com.example.android_sqlite.Films.FindFilmType
 import com.example.android_sqlite.Customers.OrderType
+import com.example.android_sqlite.DateType
 import com.example.android_sqlite.Films.CategoryType
 
 class DataBaseManager(context: Context) {
@@ -18,10 +19,29 @@ class DataBaseManager(context: Context) {
     fun setDate(day: Int, month: Int, year: Int){
         val date = "$day/$month/$year"
         //db?.execSQL("INSERT INTO  ${DataBaseConsts.Date.TABLE_NAME} (${DataBaseConsts.Date.DATE}) VALUES('$date')")
-        db?.execSQL("UPDATE  ${DataBaseConsts.Date.TABLE_NAME} SET (${DataBaseConsts.Date.DATE}) = '$date'")
+        //db?.execSQL("UPDATE  ${DataBaseConsts.Date.TABLE_NAME} SET (${DataBaseConsts.Date.DATE}) = '$date'")
+        //db?.execSQL("REPLACE INTO ${DataBaseConsts.Date.TABLE_NAME}(${DataBaseConsts.Date.DATE}) VALUES($date)")
+        /*db?.execSQL("INSERT OR IGNORE INTO  ${DataBaseConsts.Date.TABLE_NAME} (${DataBaseConsts.Date.DATE}) VALUES('$date')" +
+                " UPDATE OR IGNORE ${DataBaseConsts.Date.TABLE_NAME} SET (${DataBaseConsts.Date.DATE}) = '$date'")*/
+        //db?.execSQL("INSERT OR REPLACE INTO ${DataBaseConsts.Date.TABLE_NAME}(${DataBaseConsts.Date.DATE}) VALUES('$date')")
     }
-    fun getDate(){
+    fun getDate(): DateType{
+        val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Date.TABLE_NAME}", null)
+        cursor?.moveToFirst()
+        var date = ""
+        if(cursor != null && cursor.count > 0){
+            date = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Date.DATE))
+        }
+        val int_date = DateType(0,0,0)
 
+        if(date != ""){
+            val lines: List<String> = date.split("/")
+            int_date.day = lines[0].toInt()
+            int_date.month = lines[1].toInt()
+            int_date.year = lines[2].toInt()
+        }
+        cursor?.close()
+        return int_date
     }
     fun insertFilmToDB(title: String, remain: Int = 0, category_ID: Int = 0, cassette_price : Double = 0.0){
         db?.execSQL("INSERT INTO " + DataBaseConsts.Films.TABLE_NAME+"(${DataBaseConsts.Films.COLUMN_NAME_TITLE}, " +
@@ -113,7 +133,9 @@ class DataBaseManager(context: Context) {
         return  dataList
     }
 
-    fun insertOrderToDB(film_ID: Int, customer_ID: Int, start_of_rent: Int, end_of_rent: Int){
+    fun insertOrderToDB(film_ID: Int, customer_ID: Int, _start_of_rent: DateType, _end_of_rent: DateType){
+        val start_of_rent = "${_start_of_rent.day}/${_start_of_rent.month}/${_start_of_rent.year}"
+        val end_of_rent = "${_end_of_rent.day}/${_end_of_rent.month}/${_end_of_rent.year}"
         db?.execSQL("INSERT INTO " + DataBaseConsts.Orders.TABLE_NAME +"(${DataBaseConsts.Orders.COLUMN_NAME_FILM_ID}, " +
                 "${DataBaseConsts.Orders.COLUMN_NAME_CUSTOMER_ID}, ${DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT}, " +
                 "${DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT})" + " VALUES('$film_ID', '$customer_ID', '$start_of_rent', '$end_of_rent')")
@@ -127,8 +149,8 @@ class DataBaseManager(context: Context) {
             data.ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.ID))
             data.film_ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_FILM_ID))
             data.customer_ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_CUSTOMER_ID))
-            data.start_of_rent = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT))
-            data.end_of_rent = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT))
+            data.start_of_rent = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT))
+            data.end_of_rent = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT))
             data_list.add(data)
         }
         cursor.close()

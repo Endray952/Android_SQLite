@@ -2,7 +2,7 @@ package com.example.android_sqlite.DataBase
 
 object DataBaseConsts {
     const val  DATABASE_NAME = "VideoRent.db"
-    const val  DATABASE_VERSION = 21
+    const val  DATABASE_VERSION = 24
 
     object Films {
         const val ID = "_id"
@@ -59,8 +59,8 @@ object DataBaseConsts {
                 "${Orders.ID} INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "${Orders.COLUMN_NAME_FILM_ID} INTEGER NOT NULL," +
                 "${Orders.COLUMN_NAME_CUSTOMER_ID} INTEGER NOT NULL," +
-                "${Orders.COLUMN_NAME_START_OF_RENT} INTEGER NOT NULL," +
-                "${Orders.COLUMN_NAME_END_OF_RENT} INTEGER NOT NULL," +
+                "${Orders.COLUMN_NAME_START_OF_RENT} TEXT NOT NULL," +
+                "${Orders.COLUMN_NAME_END_OF_RENT} TEXT NOT NULL," +
                 "${Orders.COLUMN_NAME_FLAG_NOT_RETURNED} INTEGER)"
 
     const val SQL_CREATE_CUSTOMERS_TABLE =
@@ -71,7 +71,7 @@ object DataBaseConsts {
                 "${Customers.COLUMN_NAME_CUSTOMER_EMAIL} TEXT NOT NULL," +
                 "${Customers.COLUMN_NAME_CUSTOMER_PHONE_NUMBER} INTEGER NOT NULL)"
 
-    const val SQL_CREATE_DATE_TABLE = "CREATE TABLE IF NOT EXISTS ${Date.TABLE_NAME} (${Date.DATE} TEXT NOT NULL)"
+    const val SQL_CREATE_DATE_TABLE = "CREATE TABLE IF NOT EXISTS ${Date.TABLE_NAME} (${Date.DATE} TEXT PRIMARY KEY)"
 
     const val SQL_DELETE_FILMS_TABLE = "DROP TABLE IF EXISTS ${Films.TABLE_NAME}"
     const val SQL_DELETE_CATEGORIES_TABLE = "DROP TABLE IF EXISTS ${Categories.TABLE_NAME}"
