@@ -24,6 +24,20 @@ class DataBaseManager(context: Context) {
         /*db?.execSQL("INSERT OR IGNORE INTO  ${DataBaseConsts.Date.TABLE_NAME} (${DataBaseConsts.Date.DATE}) VALUES('$date')" +
                 " UPDATE OR IGNORE ${DataBaseConsts.Date.TABLE_NAME} SET (${DataBaseConsts.Date.DATE}) = '$date'")*/
         //db?.execSQL("INSERT OR REPLACE INTO ${DataBaseConsts.Date.TABLE_NAME}(${DataBaseConsts.Date.DATE}) VALUES('$date')")
+        /*db?.execSQL("INSERT INTO ${DataBaseConsts.Date.TABLE_NAME}(${DataBaseConsts.Date.ID}, ${DataBaseConsts.Date.DATE})" +
+                "VALUES(1, '$date') ON CONFLICT(${DataBaseConsts.Date.ID}) DO UPDATE SET ${DataBaseConsts.Date.DATE} = '$date'")*/
+
+        val cursor = db?.rawQuery("SELECT count(*) from ${DataBaseConsts.Date.TABLE_NAME}", null)
+        cursor?.moveToFirst()
+        val count = cursor?.getInt(0)
+        if(count != 0){
+            db?.execSQL("UPDATE  ${DataBaseConsts.Date.TABLE_NAME} SET (${DataBaseConsts.Date.DATE}) = '$date'")
+        }
+        else{
+            db?.execSQL("INSERT INTO  ${DataBaseConsts.Date.TABLE_NAME} (${DataBaseConsts.Date.DATE}) VALUES('$date')")
+        }
+       /* db?.execSQL("INSERT INTO ${DataBaseConsts.Date.TABLE_NAME}(${DataBaseConsts.Date.ID}, ${DataBaseConsts.Date.DATE}) VALUES(1, '$date') " +
+                "ON CONFLICT(${DataBaseConsts.Date.ID}) DO UPDATE SET ${DataBaseConsts.Date.DATE} = '$date'")*/
     }
     fun getDate(): DateType{
         val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Date.TABLE_NAME}", null)

@@ -2,7 +2,7 @@ package com.example.android_sqlite.DataBase
 
 object DataBaseConsts {
     const val  DATABASE_NAME = "VideoRent.db"
-    const val  DATABASE_VERSION = 24
+    const val  DATABASE_VERSION = 27
 
     object Films {
         const val ID = "_id"
@@ -38,6 +38,7 @@ object DataBaseConsts {
     object Date{
         const val TABLE_NAME = "DATE"
         const val DATE = "cur_date"
+        const val ID = "_id"
     }
 
     const val SQL_CREATE_FILMS_TABLE =
@@ -71,7 +72,9 @@ object DataBaseConsts {
                 "${Customers.COLUMN_NAME_CUSTOMER_EMAIL} TEXT NOT NULL," +
                 "${Customers.COLUMN_NAME_CUSTOMER_PHONE_NUMBER} INTEGER NOT NULL)"
 
-    const val SQL_CREATE_DATE_TABLE = "CREATE TABLE IF NOT EXISTS ${Date.TABLE_NAME} (${Date.DATE} TEXT PRIMARY KEY)"
+    const val SQL_CREATE_DATE_TABLE = "CREATE TABLE IF NOT EXISTS ${Date.TABLE_NAME} " +
+            "(${Date.ID} INTEGER PRIMARY KEY, " +
+            "${Date.DATE} TEXT)"
 
     const val SQL_DELETE_FILMS_TABLE = "DROP TABLE IF EXISTS ${Films.TABLE_NAME}"
     const val SQL_DELETE_CATEGORIES_TABLE = "DROP TABLE IF EXISTS ${Categories.TABLE_NAME}"
