@@ -95,7 +95,7 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
             categories_titles.add(elem.title)
         }
 
-        val spinner_adapter = ArrayAdapter(activity as MainActivity, android.R.layout.simple_spinner_dropdown_item, categories_titles)
+        val spinner_adapter = ArrayAdapter(activity as MainActivity, android.R.layout.simple_expandable_list_item_1, categories_titles)
         binding.Category.adapter = spinner_adapter
         binding.Category.onItemSelectedListener = this
 
