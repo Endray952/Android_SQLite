@@ -16,10 +16,7 @@ import com.example.android_sqlite.MainActivity
 import com.example.android_sqlite.R
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import com.example.android_sqlite.databinding.*
 
 
@@ -74,7 +71,7 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
     }
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         selected_cat_pos = parent?.selectedItemPosition
-        selected_cat_pos = if (selected_cat_pos!= null ) selected_cat_pos!! + 1 else null
+        //selected_cat_pos = if (selected_cat_pos!= null ) selected_cat_pos!! + 1 else null
 
     }
     private var selected_cat_pos: Int? = null
@@ -105,12 +102,15 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
             dialog.dismiss()
         }
         binding.AddBtn.setOnClickListener {
-            if(selected_cat_pos != null) {
+            if(selected_cat_pos != null && selected_cat_pos != 0) {
                 (activity as MainActivity).data_base_manager.insertFilmToDB(
                     title = binding.Title.text.toString(),
                     remain = binding.Remain.text.toString().toInt(), category_ID = selected_cat_pos!!,
                     cassette_price = binding.Price.text.toString().toDouble()
                 )
+            }
+            else{
+                Toast.makeText(activity, "Ошибка", Toast.LENGTH_SHORT).show()
             }
         }
     }

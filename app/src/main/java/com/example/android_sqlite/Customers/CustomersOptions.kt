@@ -2,7 +2,6 @@ package com.example.android_sqlite.Customers
 
 import android.app.DatePickerDialog
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -25,6 +24,7 @@ import java.util.*
 class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
     private lateinit var binding: FragmentCustomersOptionsBinding
     private var selected_customer: Int? = null
+    private var selected_film: Int? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -76,7 +76,7 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
             dialog.dismiss()
         }
         binding.Add.setOnClickListener {
-            (activity as MainActivity).data_base_manager.insertClientToDB(binding.FisrstName.text.toString(), binding.SecondName.text.toString(), binding.Email.text.toString(), binding.PhoneNumber.text.toString().trim().toInt())
+            (activity as MainActivity).data_base_manager.insertClientToDB(binding.FisrstName.text.toString(), binding.SecondName.text.toString(), binding.Email.text.toString(), binding.PhoneNumber.text.toString())
         }
     }
     private fun addOrderDialog(context: Context, inflater: LayoutInflater){
@@ -93,13 +93,21 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
 
         /** Searchable spinner for clients */
         val customers_list = (activity as MainActivity).data_base_manager. readClientsFromTable()
-        val spinner_list = arrayListOf<String>()
+        val spinner_customer_list = arrayListOf<String>()
         for(customer in customers_list){
-            spinner_list.add(customer.first_name + " " + customer.second_name + "\n" + customer.email + "\n" + customer.phone_number )
+            spinner_customer_list.add(customer.first_name + " " + customer.second_name + "\n" + customer.email + "\n" + customer.phone_number )
         }
-        binding.CustomerID.adapter = ArrayAdapter<String>(activity as MainActivity, android.R.layout.simple_expandable_list_item_1,spinner_list)
+        binding.CustomerID.adapter = ArrayAdapter<String>(activity as MainActivity, android.R.layout.simple_expandable_list_item_1,spinner_customer_list)
         binding.CustomerID.onItemSelectedListener = this
-        //binding.CustomerID.setTitle("Найти клиента")
+        /** Searchable spinner for films */
+        val films_list = (activity as MainActivity).data_base_manager. getFilmAndCategory()
+        val spinner_films_list = arrayListOf<String>()
+        for(film in films_list){
+            spinner_films_list.add(film.title + "\n" + film.category + "\n" + film.remain)
+        }
+        binding.FilmID.adapter = ArrayAdapter<String>(activity as MainActivity, android.R.layout.simple_expandable_list_item_1,spinner_films_list)
+        binding.FilmID.onItemSelectedListener = this
+
 
         binding.Cancel.setOnClickListener {
             dialog.dismiss()
@@ -120,16 +128,20 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
         binding.Add.setOnClickListener {
             /*(activity as MainActivity).data_base_manager.insertOrderToDB(binding.FilmID.text.toString().toInt(), binding.CustomerID.text.toString().toInt(),
                 (activity as MainActivity).current_date, date)*/
-            if(selected_customer != null){
+            if(selected_customer != null && selected_film != null){
                     Log.d("MyLog", selected_customer.toString())
-            (activity as MainActivity).data_base_manager.insertOrderToDB(binding.FilmID.text.toString().toInt(), customers_list[selected_customer!!].ID,
+            (activity as MainActivity).data_base_manager.insertOrderToDB(films_list[selected_film!!].id, customers_list[selected_customer!!].ID,
                 (activity as MainActivity).current_date, date)
             }
         }
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        selected_customer = parent?.selectedItemPosition
+        when(parent?.id){
+            R.id.FilmID -> selected_film = parent?.selectedItemPosition
+            R.id.CustomerID -> selected_customer = parent?.selectedItemPosition
+        }
+        //selected_customer = parent?.selectedItemPosition
         // selected_customer = if (selected_customer!= null ) selected_customer!! + 1 else null
     }
 

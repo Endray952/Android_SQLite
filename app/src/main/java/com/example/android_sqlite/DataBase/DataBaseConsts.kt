@@ -2,7 +2,7 @@ package com.example.android_sqlite.DataBase
 
 object DataBaseConsts {
     const val  DATABASE_NAME = "VideoRent.db"
-    const val  DATABASE_VERSION = 27
+    const val  DATABASE_VERSION = 30
 
     object Films {
         const val ID = "_id"
@@ -70,7 +70,7 @@ object DataBaseConsts {
                 "${Customers.COLUMN_NAME_CUSTOMER_FIRST_NAME} TEXT NOT NULL," +
                 "${Customers.COLUMN_NAME_CUSTOMER_SECOND_NAME} TEXT NOT NULL," +
                 "${Customers.COLUMN_NAME_CUSTOMER_EMAIL} TEXT NOT NULL," +
-                "${Customers.COLUMN_NAME_CUSTOMER_PHONE_NUMBER} INTEGER NOT NULL)"
+                "${Customers.COLUMN_NAME_CUSTOMER_PHONE_NUMBER} TEXT NOT NULL)"
 
     const val SQL_CREATE_DATE_TABLE = "CREATE TABLE IF NOT EXISTS ${Date.TABLE_NAME} " +
             "(${Date.ID} INTEGER PRIMARY KEY, " +

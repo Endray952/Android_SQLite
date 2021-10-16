@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Эл. почта"
-        android:inputType="textPersonName"
+        android:inputType="textPersonName|textEmailAddress"
         app:layout_constraintBottom_toTopOf="@+id/PhoneNumber"
         app:layout_constraintEnd_toEndOf="@+id/SecondName"
         app:layout_constraintStart_toStartOf="@+id/SecondName"
@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Номер телеофна"
-        android:inputType="number"
+        android:inputType="phone"
         app:layout_constraintEnd_toEndOf="@+id/Email"
         app:layout_constraintStart_toStartOf="@+id/Email"
         app:layout_constraintTop_toBottomOf="@+id/Email" />

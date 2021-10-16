@@ -6,13 +6,10 @@
     android:layout_height="wrap_content"
     android:background="@color/white">
 
-    <EditText
+    <com.toptoche.searchablespinnerlibrary.SearchableSpinner
         android:id="@+id/FilmID"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Id фильма"
-        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
