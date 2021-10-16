@@ -2,10 +2,10 @@ package com.example.android_sqlite.DataBase
 
 object DataBaseConsts {
     const val  DATABASE_NAME = "VideoRent.db"
-    const val  DATABASE_VERSION = 30
+    const val  DATABASE_VERSION = 32
 
     object Films {
-        const val ID = "_id"
+        const val ID = "film_id"
         const val TABLE_NAME = "Films"
         const val COLUMN_NAME_TITLE = "title"
         const val COLUMN_NAME_COPIES_REMAIN = "copies_remain"
@@ -21,7 +21,7 @@ object DataBaseConsts {
     object Orders {
         const val ID = "_order_id"
         const val TABLE_NAME = "Orders"
-        const val COLUMN_NAME_FILM_ID = "film_id"
+        const val COLUMN_NAME_FILM_ID = "column_film_id"
         const val COLUMN_NAME_CUSTOMER_ID = "customer_id"
         const val COLUMN_NAME_START_OF_RENT = "start_of_rent"
         const val COLUMN_NAME_END_OF_RENT = "end_of_rent"

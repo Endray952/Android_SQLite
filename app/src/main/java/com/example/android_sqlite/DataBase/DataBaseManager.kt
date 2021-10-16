@@ -128,27 +128,28 @@ class DataBaseManager(context: Context) {
     }
     fun getFilmAndCategory() : ArrayList<FilmOrderType>{
         var found_films = arrayListOf<FilmOrderType>()
-        val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Films.TABLE_NAME} JOIN ${DataBaseConsts.Categories.TABLE_NAME} ON " +
+        val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Films.TABLE_NAME} INNER JOIN ${DataBaseConsts.Categories.TABLE_NAME} ON " +
                 "${DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID} = ${DataBaseConsts.Categories.TABLE_NAME}.${DataBaseConsts.Categories.ID}", null)
 
         while (cursor?.moveToNext()!!){
             if( cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN)) != 0) {
                     val data = FilmOrderType(
-                        cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Films.ID)),
+                        cursor?.getInt(cursor.getColumnIndex("${DataBaseConsts.Films.TABLE_NAME}.${DataBaseConsts.Films.ID}")),
                         cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_TITLE)),
                         cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN)),
                         cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TITLE))
                     )
-                    /*data.title = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_TITLE))
-            data.remain = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN))
-            data.price = cursor?.getDouble(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_CASSETTE_PRICE))
-            data.category = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TITLE))*/
                     found_films.add(data)
                 }
         }
         cursor.close()
         return found_films
     }
+    fun updateFilmsRemain(id: Int){
+        db?.execSQL("UPDATE  ${DataBaseConsts.Films.TABLE_NAME} SET ${DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN} = ${DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN} - 1 " +
+                "WHERE ${DataBaseConsts.Films.ID} = $id")
+    }
+
     fun insertClientToDB(first_name: String, second_name: String, email: String, phone_number: String){
         db?.execSQL("INSERT INTO " + DataBaseConsts.Customers.TABLE_NAME +"(${DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_FIRST_NAME}, " +
                 "${DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_SECOND_NAME}, ${DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_EMAIL}, " +

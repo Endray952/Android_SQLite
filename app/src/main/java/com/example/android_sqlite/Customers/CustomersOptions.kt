@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.example.android_sqlite.DateType
@@ -129,9 +130,16 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
             /*(activity as MainActivity).data_base_manager.insertOrderToDB(binding.FilmID.text.toString().toInt(), binding.CustomerID.text.toString().toInt(),
                 (activity as MainActivity).current_date, date)*/
             if(selected_customer != null && selected_film != null){
-                    Log.d("MyLog", selected_customer.toString())
-            (activity as MainActivity).data_base_manager.insertOrderToDB(films_list[selected_film!!].id, customers_list[selected_customer!!].ID,
-                (activity as MainActivity).current_date, date)
+                Log.d("MyLog", selected_film.toString())
+                (activity as MainActivity).data_base_manager.insertOrderToDB(films_list[selected_film!!].id ,
+                    customers_list[selected_customer!!].ID,
+                    (activity as MainActivity).current_date, date)
+                (activity as MainActivity).data_base_manager.updateFilmsRemain(films_list[selected_film!!].id )
+                dialog.dismiss()
+                Toast.makeText(activity, "Успешно", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                Toast.makeText(activity, "Ошибка", Toast.LENGTH_SHORT).show()
             }
         }
     }
