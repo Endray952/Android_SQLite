@@ -53,6 +53,7 @@ class OrdersTable : Fragment() {
                 CustomerID.text = table_content.customer_ID.toString()
                 StartOfRent.text = table_content.start_of_rent.toString()
                 EndOfRent.text = table_content.end_of_rent.toString()
+                CloseDate.text = if (table_content.close_date != "") table_content.close_date else "null"
                 FlagNotReturned.text = table_content.flag_not_returned.toString()
             }
         }

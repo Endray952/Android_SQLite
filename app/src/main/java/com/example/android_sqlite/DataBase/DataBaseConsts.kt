@@ -2,7 +2,7 @@ package com.example.android_sqlite.DataBase
 
 object DataBaseConsts {
     const val  DATABASE_NAME = "VideoRent.db"
-    const val  DATABASE_VERSION = 32
+    const val  DATABASE_VERSION = 33
 
     object Films {
         const val ID = "film_id"
@@ -25,6 +25,7 @@ object DataBaseConsts {
         const val COLUMN_NAME_CUSTOMER_ID = "customer_id"
         const val COLUMN_NAME_START_OF_RENT = "start_of_rent"
         const val COLUMN_NAME_END_OF_RENT = "end_of_rent"
+        const val COLUMN_NAME_CLOSE_DATE = "close_date"
         const val COLUMN_NAME_FLAG_NOT_RETURNED = "flag_not_returned"
     }
     object Customers {
@@ -62,6 +63,7 @@ object DataBaseConsts {
                 "${Orders.COLUMN_NAME_CUSTOMER_ID} INTEGER NOT NULL," +
                 "${Orders.COLUMN_NAME_START_OF_RENT} TEXT NOT NULL," +
                 "${Orders.COLUMN_NAME_END_OF_RENT} TEXT NOT NULL," +
+                "${Orders.COLUMN_NAME_CLOSE_DATE} TEXT," +
                 "${Orders.COLUMN_NAME_FLAG_NOT_RETURNED} INTEGER)"
 
     const val SQL_CREATE_CUSTOMERS_TABLE =

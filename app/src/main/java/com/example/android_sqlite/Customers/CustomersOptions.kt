@@ -15,6 +15,9 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
 import com.example.android_sqlite.DateType
 import com.example.android_sqlite.MainActivity
 import com.example.android_sqlite.R
@@ -61,7 +64,9 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
             OrdersTable.setOnClickListener {
                 findNavController().navigate(R.id.action_clientsOptions_to_ordersTable)
             }
-
+            AddReturn.setOnClickListener {
+                addReturnDialog((activity as MainActivity), layoutInflater)
+            }
         }
     }
 
@@ -134,7 +139,7 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
                 (activity as MainActivity).data_base_manager.insertOrderToDB(films_list[selected_film!!].id ,
                     customers_list[selected_customer!!].ID,
                     (activity as MainActivity).current_date, date)
-                (activity as MainActivity).data_base_manager.updateFilmsRemain(films_list[selected_film!!].id )
+                (activity as MainActivity).data_base_manager.updateFilmsRemain(films_list[selected_film!!].id, increment = -1)
                 dialog.dismiss()
                 Toast.makeText(activity, "Успешно", Toast.LENGTH_SHORT).show()
             }
@@ -143,11 +148,58 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
             }
         }
     }
+    private val adapter = ReturnDialogAdapter()
+    private val checkbox_list = arrayListOf<CheckBoxType>()
+    private fun addReturnDialog(context: Context, inflater: LayoutInflater){
+        val mBuilder = AlertDialog.Builder(context)
+        val mView = inflater.inflate(R.layout.add_return, null)
+        val binding = AddReturnBinding.bind(mView)
+        mBuilder.setView(mView)
+        val dialog: AlertDialog = mBuilder.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
+
+        binding.ReturnRV.layoutManager = LinearLayoutManager(activity as MainActivity)
+        binding.ReturnRV.adapter = adapter
+
+        /** Searchable spinner for clients */
+        val customers_list = (activity as MainActivity).data_base_manager. readClientsFromTable()
+        val spinner_customer_list = arrayListOf<String>()
+        for(customer in customers_list){
+            spinner_customer_list.add(customer.first_name + " " + customer.second_name + "\n" + customer.email + "\n" + customer.phone_number )
+        }
+        binding.ReturnSpinner.adapter = ArrayAdapter<String>(activity as MainActivity, android.R.layout.simple_expandable_list_item_1,spinner_customer_list)
+        binding.ReturnSpinner.onItemSelectedListener = this
+
+
+        selected_customer = 0
+        addReturnUpdate()
+
+        binding.ReturnConfirm.setOnClickListener {
+            for(elem in checkbox_list) {
+                (activity as MainActivity).data_base_manager.updateDBafterReturn(elem.order_id)
+            }
+            dialog.dismiss()
+        }
+        binding.Cancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+    }
+    private fun addReturnUpdate(){
+        val orders_of_customer = (activity as MainActivity).data_base_manager.getOrdersOfCustomer(selected_customer!! + 1)
+        adapter.addAll(orders_of_customer)
+    }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when(parent?.id){
             R.id.FilmID -> selected_film = parent?.selectedItemPosition
             R.id.CustomerID -> selected_customer = parent?.selectedItemPosition
+            R.id.ReturnSpinner -> {
+                selected_customer = parent?.selectedItemPosition
+                checkbox_list.clear()
+                addReturnUpdate()
+            }
         }
         //selected_customer = parent?.selectedItemPosition
         // selected_customer = if (selected_customer!= null ) selected_customer!! + 1 else null
@@ -155,5 +207,54 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
         TODO("Not yet implemented")
+    }
+
+
+    inner class ReturnDialogAdapter : RecyclerView.Adapter<ReturnDialogAdapter.ReturnDialogHolder>() {
+
+        val orders_list: ArrayList<CustomerOrderType> = arrayListOf()
+
+        inner class ReturnDialogHolder(item: View) : RecyclerView.ViewHolder(item) {
+            val binding = ReturnElemBinding.bind(item)
+
+            fun bind(content: CustomerOrderType) = with(binding) {
+                RadioBt.text = content.film
+                RadioBt.setOnCheckedChangeListener { buttonView, isChecked ->
+                    val data = CheckBoxType(!isChecked, content.order_id)
+                    if(!checkbox_list.contains(data)){
+                        data.isChecked = !data.isChecked
+                        checkbox_list.add(data)
+                        Log.d("MyLog", checkbox_list.toString())
+                    }
+                    else{
+                        val index = checkbox_list.indexOf(data)
+                        checkbox_list.removeAt(index)
+                        Log.d("MyLog", checkbox_list.toString() + "lel")
+                    }
+                }
+            }
+        }
+
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReturnDialogHolder {
+            val view =
+                LayoutInflater.from(parent.context).inflate(R.layout.return_elem, parent, false)
+            return ReturnDialogHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: ReturnDialogHolder, position: Int) {
+                holder.bind(orders_list[position])
+
+        }
+
+        override fun getItemCount(): Int {
+            return orders_list.size
+        }
+
+        fun addAll(data: List<CustomerOrderType>) {
+            this.orders_list.clear()
+            this.orders_list.addAll(data)
+            notifyDataSetChanged()
+        }
     }
 }

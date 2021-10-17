@@ -2,6 +2,7 @@ package com.example.android_sqlite.DataBase
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import com.example.android_sqlite.Customers.CustomerOrderType
 import com.example.android_sqlite.Customers.CustomerType
 import com.example.android_sqlite.Customers.FilmOrderType
 import com.example.android_sqlite.Films.FilmsType
@@ -134,7 +135,7 @@ class DataBaseManager(context: Context) {
         while (cursor?.moveToNext()!!){
             if( cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN)) != 0) {
                     val data = FilmOrderType(
-                        cursor?.getInt(cursor.getColumnIndex("${DataBaseConsts.Films.TABLE_NAME}.${DataBaseConsts.Films.ID}")),
+                        cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Films.ID)),
                         cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_TITLE)),
                         cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN)),
                         cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TITLE))
@@ -145,8 +146,8 @@ class DataBaseManager(context: Context) {
         cursor.close()
         return found_films
     }
-    fun updateFilmsRemain(id: Int){
-        db?.execSQL("UPDATE  ${DataBaseConsts.Films.TABLE_NAME} SET ${DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN} = ${DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN} - 1 " +
+    fun updateFilmsRemain(id: Int, increment: Int){
+        db?.execSQL("UPDATE  ${DataBaseConsts.Films.TABLE_NAME} SET ${DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN} = ${DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN} + $increment " +
                 "WHERE ${DataBaseConsts.Films.ID} = $id")
     }
 
@@ -189,13 +190,45 @@ class DataBaseManager(context: Context) {
             data.customer_ID = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_CUSTOMER_ID))
             data.start_of_rent = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT))
             data.end_of_rent = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT))
+            data.close_date = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_CLOSE_DATE)) ?: ""
             data_list.add(data)
         }
         cursor.close()
         return  data_list
     }
 
+    fun getOrdersOfCustomer(id: Int): ArrayList<CustomerOrderType>{
+        val data_list = ArrayList<CustomerOrderType>()
+        val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Orders.TABLE_NAME} " +
+                "INNER JOIN ${DataBaseConsts.Films.TABLE_NAME} ON ${DataBaseConsts.Orders.COLUMN_NAME_FILM_ID} = ${DataBaseConsts.Films.ID} INNER JOIN " +
+                "${DataBaseConsts.Categories.TABLE_NAME} ON ${DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID} = ${DataBaseConsts.Categories.ID} WHERE " +
+                "${DataBaseConsts.Orders.COLUMN_NAME_CUSTOMER_ID} = $id AND ${DataBaseConsts.Orders.COLUMN_NAME_CLOSE_DATE} IS NULL"  , null)
+        while (cursor?.moveToNext()!!){
+            val data = CustomerOrderType(cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.ID)),
+                    cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_TITLE)),
+                    cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TITLE)),
+                    cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)),
+                    cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)))
+            data_list.add(data)
+        }
 
+        return  data_list
+    }
+
+    fun updateDBafterReturn(order_id: Int){
+        val date = getDate()
+        val stringDate = "${date.day}/${date.month}/${date.year}"
+        db?.execSQL("UPDATE  ${DataBaseConsts.Orders.TABLE_NAME} SET ${DataBaseConsts.Orders.COLUMN_NAME_CLOSE_DATE} = '$stringDate' " +
+                "WHERE ${DataBaseConsts.Orders.ID} = $order_id")
+        val cursor = db?.rawQuery("SELECT ${DataBaseConsts.Orders.COLUMN_NAME_FILM_ID} FROM ${DataBaseConsts.Orders.TABLE_NAME} " +
+                "WHERE ${DataBaseConsts.Orders.ID} = $order_id", null)
+        cursor?.moveToFirst()
+        if(cursor != null && cursor.count != 0){
+            val film_id = cursor.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_FILM_ID))
+            updateFilmsRemain(film_id, 1)
+        }
+        cursor?.close()
+    }
 
     fun closeDb(){
         DbHelper.close()
