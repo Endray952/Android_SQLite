@@ -67,6 +67,9 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
             AddReturn.setOnClickListener {
                 addReturnDialog((activity as MainActivity), layoutInflater)
             }
+            DebtTable.setOnClickListener {
+                findNavController().navigate(R.id.action_clientsOptions_to_debtorTable2)
+            }
         }
     }
 

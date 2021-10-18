@@ -39,6 +39,9 @@
         <action
             android:id="@+id/action_clientsOptions_to_ordersTable"
             app:destination="@id/ordersTable" />
+        <action
+            android:id="@+id/action_clientsOptions_to_debtorTable2"
+            app:destination="@id/debtorTable" />
     </fragment>
     <fragment
         android:id="@+id/financesOptions"
@@ -60,4 +63,9 @@
         android:name="com.example.android_sqlite.Customers.OrdersTable"
         android:label="fragment_orders_table"
         tools:layout="@layout/fragment_orders_table" />
+    <fragment
+        android:id="@+id/debtorTable"
+        android:name="com.example.android_sqlite.Finances.DebtorTable"
+        android:label="fragment_debtor_table"
+        tools:layout="@layout/fragment_debtor_table" />
 </navigation>

@@ -3,10 +3,7 @@ package com.example.android_sqlite.DataBase
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
-import com.example.android_sqlite.Customers.CustomerOrderType
-import com.example.android_sqlite.Customers.CustomerType
-import com.example.android_sqlite.Customers.FilmOrderType
-import com.example.android_sqlite.Customers.OrderType
+import com.example.android_sqlite.Customers.*
 import com.example.android_sqlite.DateType
 import com.example.android_sqlite.Films.CategoryType
 import com.example.android_sqlite.Films.FilmsType
@@ -248,7 +245,7 @@ class DataBaseManager(context: Context) {
                     cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)))
             data_list.add(data)
         }
-
+        cursor.close()
         return  data_list
     }
     fun updateDBafterReturn(order_id: Int){
@@ -264,6 +261,40 @@ class DataBaseManager(context: Context) {
             updateFilmsRemain(film_id, 1)
         }
         cursor?.close()
+    }
+
+    fun getDebtors(): ArrayList<DebtorType>{
+        val data_list = arrayListOf<DebtorType>()
+        val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Orders.TABLE_NAME} " +
+                "INNER JOIN ${DataBaseConsts.Customers.TABLE_NAME} ON ${DataBaseConsts.Orders.COLUMN_NAME_CUSTOMER_ID} = ${DataBaseConsts.Customers.ID} " +
+                "INNER JOIN ${DataBaseConsts.Films.TABLE_NAME} ON ${DataBaseConsts.Orders.COLUMN_NAME_FILM_ID} = ${DataBaseConsts.Films.ID} " +
+                "INNER JOIN ${DataBaseConsts.Categories.TABLE_NAME} ON ${DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID} = ${DataBaseConsts.Categories.ID} " +
+                "WHERE ${DataBaseConsts.Orders.COLUMN_NAME_CLOSE_DATE} IS NULL" , null)
+        while (cursor?.moveToNext()!!){
+            val start_of_rent = reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)))
+            val end_of_rent = reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)))
+            val current_date = getDate()
+            if(end_of_rent.year < current_date.year ||
+                (end_of_rent.year == current_date.year && end_of_rent.month < current_date.month) ||
+                (end_of_rent.year == current_date.year && end_of_rent.month == current_date.month && end_of_rent.day < current_date.day)) {
+
+                    val tariff = cursor.getDouble(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TARIFF))
+                    val dayes_overdue = calculateDays(start_of_rent, current_date) - calculateDays(start_of_rent, end_of_rent)
+                    val total_debt =  calculateDays(start_of_rent, current_date) * tariff
+                    val data = DebtorType(
+                        cursor.getString(cursor.getColumnIndex(DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_FIRST_NAME)),
+                        cursor.getString(cursor.getColumnIndex(DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_SECOND_NAME)),
+                        cursor.getString(cursor.getColumnIndex(DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_EMAIL)),
+                        cursor.getString(cursor.getColumnIndex(DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_PHONE_NUMBER)),
+                        cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)),
+                        cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)),
+                        cursor.getString(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_TITLE)),
+                        total_debt, dayes_overdue)
+                    data_list.add(data)
+            }
+        }
+        cursor.close()
+        return data_list
     }
 
     fun createFinancesReport(year: Int): ArrayList<FinancesType>{
@@ -310,7 +341,7 @@ class DataBaseManager(context: Context) {
         val days = diff / (24 * 60 * 60 * 1000)
         return days.toInt()
     }
-    private fun reparseDate(date:String): DateType{
+     fun reparseDate(date:String): DateType{
         val lines: List<String> = date.split("/")
         val date_list = DateType(lines[0].toInt(),lines[1].toInt(),lines[2].toInt())
         return date_list

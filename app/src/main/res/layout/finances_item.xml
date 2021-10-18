@@ -32,6 +32,7 @@
         android:background="@drawable/table_background"
         android:gravity="center"
         android:text="Расход"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/FinancesMonth" />
@@ -44,7 +45,7 @@
         android:gravity="center"
         android:text="Доход"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline8"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/FinancesMonth" />
 
     <TextView
@@ -54,6 +55,7 @@
         android:background="@drawable/table_background"
         android:gravity="center"
         android:text="0.0"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -66,7 +68,7 @@
         android:gravity="center"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline8"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
     <androidx.constraintlayout.widget.Guideline

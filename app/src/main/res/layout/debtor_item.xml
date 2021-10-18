@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/FirstName"
+            android:layout_width="130dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/table_background"
+            android:gravity="center"
+            android:text="First name"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/SecondName"
+            android:layout_width="130dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/table_background"
+            android:gravity="center"
+            android:text="Second name"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/Email"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/table_background"
+            android:gravity="center"
+            android:text="Email"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/PhoneNumber"
+            android:layout_width="130dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/table_background"
+            android:gravity="center"
+            android:text="Phone number"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/DebtFilm"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/table_background"
+            android:gravity="center"
+            android:text="Film" />
+
+        <TextView
+            android:id="@+id/DebtStartOfRent"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/table_background"
+            android:gravity="center"
+            android:text="Start of rent" />
+
+        <TextView
+            android:id="@+id/DebtEndOfRent"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/table_background"
+            android:gravity="center"
+            android:text="End of rent" />
+
+        <TextView
+            android:id="@+id/DebtOverdue"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/table_background"
+            android:gravity="center"
+            android:text="days overdue" />
+
+        <TextView
+            android:id="@+id/DebtTotalDebt"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/table_background"
+            android:gravity="center"
+            android:text="total debt" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
