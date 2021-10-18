@@ -128,7 +128,7 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
             }
             DatePickerDialog(activity as MainActivity, dateSetListener,
                 date.year,
-                date.month,
+                date.month - 1,
                 date.day).show()
         }
         binding.Add.setOnClickListener {
@@ -198,6 +198,7 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
             R.id.ReturnSpinner -> {
                 selected_customer = parent?.selectedItemPosition
                 checkbox_list.clear()
+                Log.d("MyLog", checkbox_list.toString())
                 addReturnUpdate()
             }
         }
@@ -218,8 +219,12 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
             val binding = ReturnElemBinding.bind(item)
 
             fun bind(content: CustomerOrderType) = with(binding) {
-                RadioBt.text = content.film
+                RadioBt.text = "${content.film}\nкатегория: ${content.category}\n${content.start_of_rent} - ${content.end_of_rent}"
+                /*if(!checkbox_list.contains(CheckBoxType(RadioBt.isChecked, content.order_id))){
+                    RadioBt.isChecked = false
+                }*/
                 RadioBt.setOnCheckedChangeListener { buttonView, isChecked ->
+
                     val data = CheckBoxType(!isChecked, content.order_id)
                     if(!checkbox_list.contains(data)){
                         data.isChecked = !data.isChecked

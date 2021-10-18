@@ -63,6 +63,7 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
                     found_films.add(0, FindFilmType())
                     adapter.addAll(found_films)
                 }
+                //убрать клаву
                 val imm: InputMethodManager =
                     requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(requireActivity().currentFocus!!.windowToken, 0)

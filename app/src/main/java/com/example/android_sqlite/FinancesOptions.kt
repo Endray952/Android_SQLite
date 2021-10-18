@@ -5,55 +5,89 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.android_sqlite.databinding.FragmentFinancesOptionsBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import androidx.recyclerview.widget.RecyclerView
+import com.example.android_sqlite.Films.FindFilmType
+import com.example.android_sqlite.Finances.FinancesType
+import com.example.android_sqlite.databinding.FinancesItemBinding
+import com.example.android_sqlite.databinding.FoundFilmsTableBinding
+import java.time.Year
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FinancesOptions.newInstance] factory method to
- * create an instance of this fragment.
- */
-class FinancesOptions : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+class FinancesOptions : Fragment(), AdapterView.OnItemSelectedListener {
+    private lateinit var binding: FragmentFinancesOptionsBinding
+    private val adapter = FinancesAdapter()
+    private var chosenYear = 2021
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_finances_options, container, false)
+        binding = FragmentFinancesOptionsBinding.inflate(inflater)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FinancesOptions.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FinancesOptions().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.FinancesRV.layoutManager = LinearLayoutManager(activity as MainActivity)
+        binding.FinancesRV.adapter = adapter
+
+        val yearsSpinner = arrayListOf<String>()
+        if((activity as MainActivity).current_date.year >= 2021) {
+            for (i in 2021..(activity as MainActivity).current_date.year) {
+                yearsSpinner.add(i.toString())
             }
+        }
+        binding.YearPicker.adapter = ArrayAdapter<String>(activity as MainActivity, android.R.layout.simple_expandable_list_item_1,yearsSpinner)
+        binding.YearPicker.onItemSelectedListener = this
+        /*val report = (activity as MainActivity).data_base_manager.createFinancesReport(chosenYear)
+        adapter.addAll(report)*/
+    }
+    inner class FinancesAdapter : RecyclerView.Adapter<FinancesAdapter.FinancesHolder>() {
+
+        val table_content: ArrayList<FinancesType> = arrayListOf()
+
+        inner class FinancesHolder(item: View) : RecyclerView.ViewHolder(item) {
+            val binding = FinancesItemBinding.bind(item)
+
+            fun bind(table_content: FinancesType) = with(binding) {
+                FinancesMonth.text = table_content.month
+                Income.text = table_content.income.toString()
+            }
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FinancesHolder {
+            val view =
+                LayoutInflater.from(parent.context).inflate(R.layout.finances_item, parent, false)
+            return FinancesHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: FinancesHolder, position: Int) {
+                holder.bind(table_content[position])
+
+        }
+
+        override fun getItemCount(): Int {
+            return table_content.size
+        }
+
+        fun addAll(data: List<FinancesType>) {
+            this.table_content.clear()
+            this.table_content.addAll(data)
+            notifyDataSetChanged()
+        }
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        chosenYear = 2021+position
+        val report = (activity as MainActivity).data_base_manager.createFinancesReport(chosenYear)
+        adapter.addAll(report)
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        TODO("Not yet implemented")
     }
 }

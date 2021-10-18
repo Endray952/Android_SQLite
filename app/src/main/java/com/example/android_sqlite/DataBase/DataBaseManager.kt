@@ -2,14 +2,19 @@ package com.example.android_sqlite.DataBase
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
 import com.example.android_sqlite.Customers.CustomerOrderType
 import com.example.android_sqlite.Customers.CustomerType
 import com.example.android_sqlite.Customers.FilmOrderType
-import com.example.android_sqlite.Films.FilmsType
-import com.example.android_sqlite.Films.FindFilmType
 import com.example.android_sqlite.Customers.OrderType
 import com.example.android_sqlite.DateType
 import com.example.android_sqlite.Films.CategoryType
+import com.example.android_sqlite.Films.FilmsType
+import com.example.android_sqlite.Films.FindFilmType
+import com.example.android_sqlite.Finances.FinancesType
+import java.lang.Math.abs
+import java.util.*
+import kotlin.collections.ArrayList
 
 class DataBaseManager(context: Context) {
     val DbHelper = DataBaseHelper(context)
@@ -29,7 +34,7 @@ class DataBaseManager(context: Context) {
         /*db?.execSQL("INSERT INTO ${DataBaseConsts.Date.TABLE_NAME}(${DataBaseConsts.Date.ID}, ${DataBaseConsts.Date.DATE})" +
                 "VALUES(1, '$date') ON CONFLICT(${DataBaseConsts.Date.ID}) DO UPDATE SET ${DataBaseConsts.Date.DATE} = '$date'")*/
 
-        val cursor = db?.rawQuery("SELECT count(*) from ${DataBaseConsts.Date.TABLE_NAME}", null)
+        var cursor = db?.rawQuery("SELECT count(*) from ${DataBaseConsts.Date.TABLE_NAME}", null)
         cursor?.moveToFirst()
         val count = cursor?.getInt(0)
         if(count != 0){
@@ -40,6 +45,32 @@ class DataBaseManager(context: Context) {
         }
        /* db?.execSQL("INSERT INTO ${DataBaseConsts.Date.TABLE_NAME}(${DataBaseConsts.Date.ID}, ${DataBaseConsts.Date.DATE}) VALUES(1, '$date') " +
                 "ON CONFLICT(${DataBaseConsts.Date.ID}) DO UPDATE SET ${DataBaseConsts.Date.DATE} = '$date'")*/
+        cursor?.close()
+
+        cursor = db?.rawQuery("SELECT * from ${DataBaseConsts.Orders.TABLE_NAME}", null)
+        while (cursor?.moveToNext()!!){
+            if(cursor.isNull(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_FLAG_NOT_RETURNED)) &&
+                cursor.isNull(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_CLOSE_DATE)) ){
+                val end_of_rent = reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)))
+                val current_day = getDate()
+                val diff = calculateDays(end_of_rent,current_day)
+                if(diff >= 365){
+                    //val date_of_write_off =
+                    val end_calendar: Calendar = Calendar.getInstance()
+                    end_calendar.set(Calendar.DAY_OF_MONTH, end_of_rent.day)
+                    end_calendar.set(Calendar.MONTH, end_of_rent.month)
+                    end_calendar.set(Calendar.YEAR, end_of_rent.year)
+                    end_calendar.add(Calendar.DATE, 365)
+                    val date_of_write_off = DateType(end_calendar.get(Calendar.DAY_OF_MONTH),end_calendar.get(Calendar.MONTH), end_calendar.get(Calendar.YEAR))
+                    Log.d("MyLog", date_of_write_off.toString())
+                    val close_date = "${date_of_write_off.day}/${date_of_write_off.month}/${date_of_write_off.year}"
+                    val id = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.ID))
+                    db?.execSQL("UPDATE  ${DataBaseConsts.Orders.TABLE_NAME} SET ${DataBaseConsts.Orders.COLUMN_NAME_CLOSE_DATE} = '$close_date', " +
+                            "${DataBaseConsts.Orders.COLUMN_NAME_FLAG_NOT_RETURNED} = 1 WHERE ${DataBaseConsts.Orders.ID} = $id")
+                }
+            }
+        }
+
     }
     fun getDate(): DateType{
         val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Date.TABLE_NAME}", null)
@@ -191,6 +222,12 @@ class DataBaseManager(context: Context) {
             data.start_of_rent = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT))
             data.end_of_rent = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT))
             data.close_date = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_CLOSE_DATE)) ?: ""
+            data.flag_not_returned = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_FLAG_NOT_RETURNED))
+           /* val flag: Int? = cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_FLAG_NOT_RETURNED))
+            if(flag != null) {
+                data.flag_not_returned = flag
+                    //cursor?.getInt(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_FLAG_NOT_RETURNED))
+            }*/
             data_list.add(data)
         }
         cursor.close()
@@ -214,7 +251,6 @@ class DataBaseManager(context: Context) {
 
         return  data_list
     }
-
     fun updateDBafterReturn(order_id: Int){
         val date = getDate()
         val stringDate = "${date.day}/${date.month}/${date.year}"
@@ -230,7 +266,70 @@ class DataBaseManager(context: Context) {
         cursor?.close()
     }
 
+    fun createFinancesReport(year: Int): ArrayList<FinancesType>{
+        val data_list = initFinancesList()
+        val current_date: DateType = getDate()
+        val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Orders.TABLE_NAME} INNER JOIN ${DataBaseConsts.Films.TABLE_NAME} ON " +
+                "${DataBaseConsts.Orders.COLUMN_NAME_FILM_ID} = ${DataBaseConsts.Films.ID} INNER JOIN ${DataBaseConsts.Categories.TABLE_NAME} ON " +
+                "${DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID} = ${DataBaseConsts.Categories.ID}", null)
+        while(cursor?.moveToNext()!!){
+            if(!cursor.isNull(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_FLAG_NOT_RETURNED))){ //If not returned
+               // val date: DateType = reparseDate(cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)))
+                val start_of_rent = reparseDate(cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)))
+                if(year - start_of_rent.year == 1) {
+                    val cassette_price = cursor?.getDouble(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_CASSETTE_PRICE))
+                    data_list[current_date.month - 1].income += cassette_price
+                }
+            }
+            else if (!cursor.isNull(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT))){
+                val start_of_rent = reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)))
+                val end_of_rent = reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)))
+                if(end_of_rent.year == year) {
+                    val tariff = cursor.getDouble(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TARIFF))
+                    data_list[end_of_rent.month - 1].income += calculateDays(start_of_rent, end_of_rent) * tariff
+                }
+            }
+        }
+        data_list[12].income = data_list.sumOf { it.income }
+        return data_list
+    }
+
     fun closeDb(){
         DbHelper.close()
+    }
+    private fun calculateDays(start: DateType, end: DateType) : Int{
+        val start_of_rent: Calendar = Calendar.getInstance()
+        start_of_rent.set(Calendar.DAY_OF_MONTH, start.day)
+        start_of_rent.set(Calendar.MONTH, start.month-1)
+        start_of_rent.set(Calendar.YEAR, start.year)
+        val end_of_rent: Calendar = Calendar.getInstance()
+        end_of_rent.set(Calendar.DAY_OF_MONTH, end.day)
+        end_of_rent.set(Calendar.MONTH, end.month-1)
+        end_of_rent.set(Calendar.YEAR, end.year)
+        val diff: Long = end_of_rent.timeInMillis - start_of_rent.timeInMillis
+        val days = diff / (24 * 60 * 60 * 1000)
+        return days.toInt()
+    }
+    private fun reparseDate(date:String): DateType{
+        val lines: List<String> = date.split("/")
+        val date_list = DateType(lines[0].toInt(),lines[1].toInt(),lines[2].toInt())
+        return date_list
+    }
+    private fun initFinancesList(): ArrayList<FinancesType>{
+        val data_list = ArrayList<FinancesType>()
+        data_list.add(FinancesType("Январь", 0.0,0.0))
+        data_list.add(FinancesType("Февраль", 0.0,0.0))
+        data_list.add(FinancesType("Март", 0.0,0.0))
+        data_list.add(FinancesType("Апрель", 0.0,0.0))
+        data_list.add(FinancesType("Март", 0.0,0.0))
+        data_list.add(FinancesType("Июнь", 0.0,0.0))
+        data_list.add(FinancesType("Июль", 0.0,0.0))
+        data_list.add(FinancesType("Август", 0.0,0.0))
+        data_list.add(FinancesType("Сентябрь", 0.0,0.0))
+        data_list.add(FinancesType("Октябрь", 0.0,0.0))
+        data_list.add(FinancesType("Ноябрь", 0.0,0.0))
+        data_list.add(FinancesType("Декабрь", 0.0,0.0))
+        data_list.add(FinancesType("Всего", 0.0,0.0))
+        return data_list
     }
 }
