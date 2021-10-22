@@ -145,6 +145,7 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
                 Remain.text = table_content.remain.toString()
                 WillBeAvailable.text = "-"//table_content.category_ID.toString()
                 Price.text = table_content.price.toString()
+
             }
         }
 

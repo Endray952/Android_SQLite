@@ -8,6 +8,7 @@ import com.example.android_sqlite.DateType
 import com.example.android_sqlite.Films.CategoryType
 import com.example.android_sqlite.Films.FilmsType
 import com.example.android_sqlite.Films.FindFilmType
+import com.example.android_sqlite.Finances.ChequeType
 import com.example.android_sqlite.Finances.FinancesType
 import java.lang.Math.abs
 import java.util.*
@@ -261,6 +262,55 @@ class DataBaseManager(context: Context) {
             updateFilmsRemain(film_id, 1)
         }
         cursor?.close()
+    }
+    fun getChequesOfCustomer(id: Int): ArrayList<ChequeType>{
+        val data_list = ArrayList<ChequeType>()
+        val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Orders.TABLE_NAME} " +
+                "INNER JOIN ${DataBaseConsts.Films.TABLE_NAME} ON ${DataBaseConsts.Orders.COLUMN_NAME_FILM_ID} = ${DataBaseConsts.Films.ID} INNER JOIN " +
+                "${DataBaseConsts.Categories.TABLE_NAME} ON ${DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID} = ${DataBaseConsts.Categories.ID} WHERE " +
+                "${DataBaseConsts.Orders.COLUMN_NAME_CUSTOMER_ID} = $id"  , null)
+        while (cursor?.moveToNext()!!){
+            val close_date: String? = cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_CLOSE_DATE))
+            val start_of_rent =  reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)))
+            val end_of_rent =  reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)))
+            val cassette_price =  cursor.getDouble(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_CASSETTE_PRICE))
+            val tariff = cursor.getDouble(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TARIFF))
+            var customer_payment = 0.0
+            var shop_payment = 0.0
+            var isGetting = true //Только получаем
+            val plan_days = calculateDays(start_of_rent,end_of_rent)
+            customer_payment += (plan_days+1)*tariff + cassette_price
+            var data = ChequeType(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_TITLE)),
+                cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)),
+                cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)),
+                close_date ?: "", tariff, cassette_price, isGetting, customer_payment, shop_payment)
+            data_list.add(data)
+            if(close_date != null){
+                isGetting = false
+                customer_payment = 0.0
+                val days_before_close = calculateDays(start_of_rent,reparseDate(close_date))
+                if(plan_days > days_before_close){
+                    shop_payment += (plan_days - days_before_close)* tariff + cassette_price
+                }
+                else{
+                    val debt = cassette_price - (days_before_close - plan_days)* tariff
+                    if(debt > 0.0){
+                        shop_payment += debt
+                    }
+                    else{
+                        customer_payment += abs(debt)
+                    }
+                }
+                data = ChequeType(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_TITLE)),
+                    cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)),
+                    cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)),
+                    close_date ?: "", tariff, cassette_price, isGetting, customer_payment, shop_payment)
+                data_list.add(data)
+            }
+
+        }
+        cursor.close()
+        return  data_list
     }
 
     fun getDebtors(): ArrayList<DebtorType>{

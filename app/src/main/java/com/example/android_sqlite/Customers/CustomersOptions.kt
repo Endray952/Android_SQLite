@@ -70,6 +70,9 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
             DebtTable.setOnClickListener {
                 findNavController().navigate(R.id.action_clientsOptions_to_debtorTable2)
             }
+            OrdersList.setOnClickListener {
+                findNavController().navigate(R.id.action_clientsOptions_to_ordersList2)
+            }
         }
     }
 
@@ -212,6 +215,7 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onNothingSelected(parent: AdapterView<*>?) {
         TODO("Not yet implemented")
     }
+
 
 
     inner class ReturnDialogAdapter : RecyclerView.Adapter<ReturnDialogAdapter.ReturnDialogHolder>() {

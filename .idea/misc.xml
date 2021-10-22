@@ -12,6 +12,7 @@
         <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/add_order.xml" value="0.5" />
         <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/add_return.xml" value="0.30104166666666665" />
         <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/category_table.xml" value="0.33177083333333335" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/cheque_item.xml" value="0.5541666666666667" />
         <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/clients_table.xml" value="0.359375" />
         <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/customers_table.xml" value="0.30104166666666665" />
         <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/debtor_item.xml" value="0.5" />
@@ -26,6 +27,7 @@
         <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/fragment_films_options.xml" value="0.5" />
         <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/fragment_films_table.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/fragment_finances_options.xml" value="0.25" />
+        <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/fragment_orders_list.xml" value="0.5" />
         <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/fragment_orders_table.xml" value="0.315625" />
         <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/orders_table.xml" value="0.315625" />
         <entry key="..\:/Users/andre/source/repos/Android_SQLite/app/src/main/res/layout/return_elem.xml" value="0.30104166666666665" />

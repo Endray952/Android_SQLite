@@ -2,7 +2,7 @@ package com.example.android_sqlite.DataBase
 
 object DataBaseConsts {
     const val  DATABASE_NAME = "VideoRent.db"
-    const val  DATABASE_VERSION = 33
+    const val  DATABASE_VERSION = 35
 
     object Films {
         const val ID = "film_id"
