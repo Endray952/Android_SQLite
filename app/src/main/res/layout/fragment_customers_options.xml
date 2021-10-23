@@ -35,7 +35,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
+                <TextView
                     android:id="@+id/Day"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
@@ -43,13 +43,15 @@
                     android:ems="10"
                     android:inputType="date"
                     android:text="10"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
                     app:layout_constraintEnd_toStartOf="@+id/Month"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
-                <EditText
+                <TextView
                     android:id="@+id/Month"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
@@ -57,12 +59,14 @@
                     android:ems="10"
                     android:inputType="date"
                     android:text="10"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
                     app:layout_constraintEnd_toStartOf="@+id/Year"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/Day"
                     app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
-                <EditText
+                <TextView
                     android:id="@+id/Year"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
@@ -70,15 +74,17 @@
                     android:ems="10"
                     android:inputType="date"
                     android:text="2021"
+                    android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/Month"
-                    app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView5"
+                    android:textColor="@color/black" />
 
                 <Button
                     android:id="@+id/UpdateDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Применить"
+                    android:text="Изменить"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/Month" />

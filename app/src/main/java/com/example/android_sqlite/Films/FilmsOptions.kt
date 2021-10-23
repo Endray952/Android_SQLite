@@ -53,7 +53,9 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
             }
             FindFilmBtn.setOnClickListener {
                 val found_films : ArrayList<FindFilmType> = arrayListOf()
-                found_films.addAll((activity as MainActivity).data_base_manager.findFilmWithTitle(FindFilmName.text.toString()))
+                if(FindFilmName.text != null) {
+                    found_films.addAll((activity as MainActivity).data_base_manager.findFilmWithTitle(FindFilmName.text.toString()))
+                }
                 if (found_films.isEmpty()){
                     FindFilmName.setText("No such film")
                     FoundFilmsRV.visibility = View.GONE
@@ -64,9 +66,14 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
                     adapter.addAll(found_films)
                 }
                 //убрать клаву
-                val imm: InputMethodManager =
-                    requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(requireActivity().currentFocus!!.windowToken, 0)
+                val view: View? = requireActivity().currentFocus
+                if(view != null) {
+                    val imm: InputMethodManager =
+                        requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(requireActivity().currentFocus!!.windowToken, 0)
+                }
+
+
             }
         }
     }

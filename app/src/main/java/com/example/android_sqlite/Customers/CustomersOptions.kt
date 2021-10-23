@@ -47,10 +47,26 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
             Month.setText((activity as MainActivity).current_date.month.toString())
             Year.setText((activity as MainActivity).current_date.year.toString())
             UpdateDate.setOnClickListener {
-                (activity as MainActivity).current_date.day = Day.text.toString().toInt()
+                /*(activity as MainActivity).current_date.day = Day.text.toString().toInt()
                 (activity as MainActivity).current_date.month = Month.text.toString().toInt()
-                (activity as MainActivity).current_date.year = Year.text.toString().toInt()
-                (activity as MainActivity).data_base_manager.setDate(Day.text.toString().toInt(),Month.text.toString().toInt(), Year.text.toString().toInt())
+                (activity as MainActivity).current_date.year = Year.text.toString().toInt()*/
+                val dateSetListener1 = DatePickerDialog.OnDateSetListener { view, year, month, day ->
+                    (activity as MainActivity).current_date.year = year
+                    (activity as MainActivity).current_date.month = month + 1
+                    (activity as MainActivity).current_date.day = day
+                    binding.Day.text = day.toString()
+                    binding.Month.text = (month+1).toString()
+                    binding.Year.text = year.toString()
+                    (activity as MainActivity).data_base_manager.setDate(Day.text.toString().toInt(),Month.text.toString().toInt(), Year.text.toString().toInt())
+                }
+                //Log.d("MyLog", (activity as MainActivity).current_date.toString())
+                DatePickerDialog(activity as MainActivity, dateSetListener1,
+                    (activity as MainActivity).current_date.year,
+                    (activity as MainActivity).current_date.month - 1,
+                    (activity as MainActivity).current_date.day).show()
+                //(activity as MainActivity).data_base_manager.setDate(Day.text.toString().toInt(),Month.text.toString().toInt(), Year.text.toString().toInt())
+                //Log.d("MyLog", Day.text.toString())
+                //(activity as MainActivity).data_base_manager.setDate(Day.text.toString().toInt(),Month.text.toString().toInt(), Year.text.toString().toInt())
             }
             AddClient.setOnClickListener {
                 addClientDialog((activity as MainActivity), layoutInflater)
@@ -99,6 +115,7 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
         val dialog: AlertDialog = mBuilder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
+        //val date = (activity as MainActivity).current_date// DateType((activity as MainActivity).current_date.day, (activity as MainActivity).current_date.month,(activity as MainActivity).current_date.year)
         val date = DateType((activity as MainActivity).current_date.day, (activity as MainActivity).current_date.month,(activity as MainActivity).current_date.year)
         binding.StartOfRent.text = "${date.day}/${date.month}/${date.year}"
         binding.EndOfRent.text = "${date.day}/${date.month}/${date.year}"

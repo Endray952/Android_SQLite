@@ -89,6 +89,7 @@ class DataBaseManager(context: Context) {
         return int_date
     }
     fun insertFilmToDB(title: String, remain: Int = 0, category_ID: Int = 0, cassette_price : Double = 0.0){
+
         db?.execSQL("INSERT INTO " + DataBaseConsts.Films.TABLE_NAME+"(${DataBaseConsts.Films.COLUMN_NAME_TITLE}, " +
                 "${DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN}, ${DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID}, " +
                 "${DataBaseConsts.Films.COLUMN_NAME_CASSETTE_PRICE})" + " VALUES('$title', '$remain', '$category_ID', '$cassette_price')")
@@ -320,6 +321,7 @@ class DataBaseManager(context: Context) {
                 "INNER JOIN ${DataBaseConsts.Films.TABLE_NAME} ON ${DataBaseConsts.Orders.COLUMN_NAME_FILM_ID} = ${DataBaseConsts.Films.ID} " +
                 "INNER JOIN ${DataBaseConsts.Categories.TABLE_NAME} ON ${DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID} = ${DataBaseConsts.Categories.ID} " +
                 "WHERE ${DataBaseConsts.Orders.COLUMN_NAME_CLOSE_DATE} IS NULL" , null)
+        Log.d("MyLog", getDate().toString())
         while (cursor?.moveToNext()!!){
             val start_of_rent = reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)))
             val end_of_rent = reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)))
@@ -330,7 +332,7 @@ class DataBaseManager(context: Context) {
 
                     val tariff = cursor.getDouble(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TARIFF))
                     val dayes_overdue = calculateDays(start_of_rent, current_date) - calculateDays(start_of_rent, end_of_rent)
-                    val total_debt =  calculateDays(start_of_rent, current_date) * tariff
+                    val total_debt =  calculateDays(end_of_rent, current_date) * tariff
                     val data = DebtorType(
                         cursor.getString(cursor.getColumnIndex(DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_FIRST_NAME)),
                         cursor.getString(cursor.getColumnIndex(DataBaseConsts.Customers.COLUMN_NAME_CUSTOMER_SECOND_NAME)),
@@ -344,6 +346,8 @@ class DataBaseManager(context: Context) {
             }
         }
         cursor.close()
+        data_list.sortWith(compareByDescending{it.overdue})
+        //data_list = data_list.asReversed() as ArrayList<DebtorType>
         return data_list
     }
 
