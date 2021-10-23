@@ -22,7 +22,7 @@ import com.example.android_sqlite.databinding.*
 
 class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
     private lateinit var binding: FragmentFilmsOptionsBinding
-    private val adapter = FilmsFoundAdapter()
+   // private val adapter = FilmsFoundAdapter()
     //private val add_film_cat_spinner = Spinner(requireActivity());
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -36,7 +36,7 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
         botNav.visibility = View.VISIBLE
 
         binding.FoundFilmsRV.layoutManager = LinearLayoutManager(activity as MainActivity)
-        binding.FoundFilmsRV.adapter = adapter
+        //binding.FoundFilmsRV.adapter = adapter
 
         with(binding){
             AddFilm.setOnClickListener{
@@ -52,39 +52,57 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
                 findNavController().navigate(R.id.action_filmsOptions_to_categoryTable)
             }
             FindFilmBtn.setOnClickListener {
-                val found_films : ArrayList<FindFilmType> = arrayListOf()
-                if(FindFilmName.text != null) {
-                    found_films.addAll((activity as MainActivity).data_base_manager.findFilmWithTitle(FindFilmName.text.toString()))
-                }
-                if (found_films.isEmpty()){
-                    FindFilmName.setText("No such film")
-                    FoundFilmsRV.visibility = View.GONE
-                }
-                else{
-                    FoundFilmsRV.visibility = View.VISIBLE
-                    found_films.add(0, FindFilmType())
-                    adapter.addAll(found_films)
-                }
-                //убрать клаву
-                val view: View? = requireActivity().currentFocus
-                if(view != null) {
-                    val imm: InputMethodManager =
-                        requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(requireActivity().currentFocus!!.windowToken, 0)
-                }
-
-
+                findFilmDialog(activity as MainActivity, layoutInflater)
             }
         }
     }
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        selected_cat_pos = parent?.selectedItemPosition
-        //selected_cat_pos = if (selected_cat_pos!= null ) selected_cat_pos!! + 1 else null
+        when(parent?.id){
+            R.id.Category -> selected_cat_pos = parent.selectedItemPosition
+            R.id.Film ->{
+                selected_film = parent.selectedItemPosition
+                with(filmBinding){
+                    CassettePrice.text = films_list[selected_film].price.toString()
+                    TariffPrice.text = films_list[selected_film].tariff.toString()
+                    if(films_list[selected_film].available == ""){
+                        Available.text = films_list[selected_film].remain.toString()
+                        AvailableText.text = "Доступно штук"
+                    }
+                    else{
+                        Available.text = films_list[selected_film].available
+                        AvailableText.text = "Будет доступно"
+                }
+
+            }}
+        }
 
     }
     private var selected_cat_pos: Int? = null
+    private var selected_film = 0
+    private lateinit var filmBinding: FindFilmBinding
     override fun onNothingSelected(parent: AdapterView<*>?) {
         TODO("Not yet implemented")
+    }
+    var films_list = arrayListOf<FindFilmType>()
+    private fun findFilmDialog(context: Context, inflater: LayoutInflater){
+        val mBuilder = AlertDialog.Builder(context)
+        val mView = inflater.inflate(R.layout.find_film, null)
+        filmBinding = FindFilmBinding.bind(mView)
+        mBuilder.setView(mView)
+        val dialog: AlertDialog = mBuilder.create()
+
+        films_list = (activity as MainActivity).data_base_manager.findFilm()
+        val spinner_films_list = arrayListOf<String>()
+        for(film in films_list){
+            spinner_films_list.add(film.title + "\n" + film.category)
+        }
+        filmBinding.Film.adapter = ArrayAdapter<String>(activity as MainActivity, android.R.layout.simple_expandable_list_item_1,spinner_films_list)
+        filmBinding.Film.onItemSelectedListener = this
+
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
+
     }
     private fun addFilmDialog(context: Context, inflater: LayoutInflater){
         val mBuilder = AlertDialog.Builder(context)
@@ -116,6 +134,8 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
                     remain = binding.Remain.text.toString().toInt(), category_ID = selected_cat_pos!!,
                     cassette_price = binding.Price.text.toString().toDouble()
                 )
+                dialog.dismiss()
+                Toast.makeText(activity, "Ошибка", Toast.LENGTH_SHORT).show()
             }
             else{
                 Toast.makeText(activity, "Ошибка", Toast.LENGTH_SHORT).show()
@@ -145,7 +165,7 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
             }
         }
     }
-    inner class FilmsFoundAdapter : RecyclerView.Adapter<FilmsFoundAdapter.FilmsFoundHolder>() {
+    /*inner class FilmsFoundAdapter : RecyclerView.Adapter<FilmsFoundAdapter.FilmsFoundHolder>() {
 
         val table_content: ArrayList<FindFilmType> = arrayListOf()
 
@@ -157,8 +177,14 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
                 Title.text = table_content.title
                 Category.text = table_content.category
                 Remain.text = table_content.remain.toString()
-                WillBeAvailable.text = "-"//table_content.category_ID.toString()
+                //WillBeAvailable.text = "-"//table_content.category_ID.toString()
                 Price.text = table_content.price.toString()
+                if(table_content.available == ""){
+                    "-"
+                }
+                else{
+                    WillBeAvailable.text = table_content.available
+                }
 
             }
         }
@@ -185,7 +211,7 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
             this.table_content.addAll(data)
             notifyDataSetChanged()
         }
-    }
+    }*/
 
 
 }

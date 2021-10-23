@@ -32,7 +32,7 @@ class OrdersList : Fragment(), AdapterView.OnItemSelectedListener  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val orders_oprions = arrayListOf<String>("Все", "Возвраты", "Взятия в аренду")
+        val orders_oprions = arrayListOf<String>("Все", "Возвраты", "Взятия в аренду", "Взятые в аренду и не возвращенные")
         val orders_adapter = ArrayAdapter(activity as MainActivity, android.R.layout.simple_expandable_list_item_1, orders_oprions)
         binding.ChequeType.adapter = orders_adapter
         binding.ChequeType.onItemSelectedListener = this
@@ -53,6 +53,11 @@ class OrdersList : Fragment(), AdapterView.OnItemSelectedListener  {
     private fun recyclerViewUpdate(){
         if(customers_list.isNotEmpty()) {
             val cheques = (activity as MainActivity).data_base_manager.getChequesOfCustomer(customers_list[selected_customer].ID)
+            when(selected_cheque_type){
+                1 -> cheques.removeIf { it.is_getting == true }
+                2 -> cheques.removeIf { it.is_getting == false }
+                3 -> cheques.removeIf { it.close_date != ""}
+            }
             adapter.addAll(cheques)
         }
     }

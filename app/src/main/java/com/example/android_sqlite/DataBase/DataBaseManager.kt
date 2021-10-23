@@ -157,6 +157,39 @@ class DataBaseManager(context: Context) {
         cursor.close()
         return found_films
     }
+    fun findFilm(): ArrayList<FindFilmType>{
+        val found_films = arrayListOf<FindFilmType>()
+        /*val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Orders.TABLE_NAME} INNER JOIN ${DataBaseConsts.Films.TABLE_NAME} ON " +
+                "${DataBaseConsts.Orders.COLUMN_NAME_FILM_ID} = ${DataBaseConsts.Films.ID} INNER JOIN ${DataBaseConsts.Categories.TABLE_NAME} ON " +
+                "${DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID} = ${DataBaseConsts.Categories.ID} " +
+                "WHERE ${DataBaseConsts.Orders.COLUMN_NAME_FILM_ID} = $film_ID", null)*/
+        val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Films.TABLE_NAME} JOIN ${DataBaseConsts.Categories.TABLE_NAME} ON " +
+                "${DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID} = ${DataBaseConsts.Categories.TABLE_NAME}.${DataBaseConsts.Categories.ID} ", null)
+        while (cursor?.moveToNext()!!){
+            val data = FindFilmType()
+            val remain = cursor.getInt(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN))
+            if(remain == 0){
+                val film_ID = cursor.getInt(cursor.getColumnIndex(DataBaseConsts.Films.ID))
+                val cursor_additional = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Orders.TABLE_NAME} INNER JOIN ${DataBaseConsts.Films.TABLE_NAME} ON " +
+                "${DataBaseConsts.Orders.COLUMN_NAME_FILM_ID} = ${DataBaseConsts.Films.ID} " +
+                "WHERE ${DataBaseConsts.Orders.COLUMN_NAME_FILM_ID} = $film_ID", null)
+                var dates_available = ""
+                while (cursor_additional?.moveToNext()!!){
+                    dates_available += cursor_additional.getString(cursor_additional.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)) + "\n"
+                }
+                data.available = dates_available
+                cursor_additional.close()
+            }
+            data.title = cursor.getString(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_TITLE))
+            data.remain = cursor.getInt(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_COPIES_REMAIN))
+            data.price = cursor.getDouble(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_CASSETTE_PRICE))
+            data.category = cursor.getString(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TITLE))
+            data.tariff = cursor.getDouble(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TARIFF))
+            found_films.add(data)
+        }
+        cursor?.close()
+        return found_films
+    }
     fun getFilmAndCategory() : ArrayList<FilmOrderType>{
         var found_films = arrayListOf<FilmOrderType>()
         val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Films.TABLE_NAME} INNER JOIN ${DataBaseConsts.Categories.TABLE_NAME} ON " +
