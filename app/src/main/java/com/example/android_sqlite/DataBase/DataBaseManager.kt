@@ -201,7 +201,20 @@ class DataBaseManager(context: Context) {
         cursor.close()
         return  dataList
     }
-
+    fun checkCustomerDebts(id: Int): Boolean{
+        val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Orders.TABLE_NAME} WHERE ${DataBaseConsts.Orders.COLUMN_NAME_CUSTOMER_ID} = $id AND ${DataBaseConsts.Orders.COLUMN_NAME_CLOSE_DATE} IS NULL"  , null)
+        var hasDebt = false
+        while (cursor?.moveToNext()!!){
+            val end_of_rent = reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)))
+            val current_date = getDate()
+            if(calculateDays(end_of_rent, current_date) > 0){
+                hasDebt = true
+                break
+            }
+        }
+        cursor.close()
+        return hasDebt
+    }
     fun insertOrderToDB(film_ID: Int, customer_ID: Int, _start_of_rent: DateType, _end_of_rent: DateType){
         val start_of_rent = "${_start_of_rent.day}/${_start_of_rent.month}/${_start_of_rent.year}"
         val end_of_rent = "${_end_of_rent.day}/${_end_of_rent.month}/${_end_of_rent.year}"

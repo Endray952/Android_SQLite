@@ -104,21 +104,35 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
             dialog.dismiss()
         }
         binding.Add.setOnClickListener {
-            (activity as MainActivity).data_base_manager.insertClientToDB(binding.FisrstName.text.toString(), binding.SecondName.text.toString(), binding.Email.text.toString(), binding.PhoneNumber.text.toString())
+            if(binding.FisrstName.text.isNotEmpty() && binding.SecondName.text.isNotEmpty() && binding.Email.text.isNotEmpty() && binding.PhoneNumber.text.isNotEmpty()) {
+                (activity as MainActivity).data_base_manager.insertClientToDB(
+                    binding.FisrstName.text.toString(),
+                    binding.SecondName.text.toString(),
+                    binding.Email.text.toString(),
+                    binding.PhoneNumber.text.toString()
+                )
+                dialog.dismiss()
+                Toast.makeText(activity, "Успешно", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                Toast.makeText(activity, "Ошибка", Toast.LENGTH_SHORT).show()
+            }
         }
     }
+    private lateinit var addOrderBinding: AddOrderBinding
     private fun addOrderDialog(context: Context, inflater: LayoutInflater){
         val mBuilder = AlertDialog.Builder(context)
         val mView = inflater.inflate(R.layout.add_order, null)
-        val binding = AddOrderBinding.bind(mView)
+       // val binding = AddOrderBinding.bind(mView)
+        addOrderBinding = AddOrderBinding.bind(mView)
         mBuilder.setView(mView)
         val dialog: AlertDialog = mBuilder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
         //val date = (activity as MainActivity).current_date// DateType((activity as MainActivity).current_date.day, (activity as MainActivity).current_date.month,(activity as MainActivity).current_date.year)
         val date = DateType((activity as MainActivity).current_date.day, (activity as MainActivity).current_date.month,(activity as MainActivity).current_date.year)
-        binding.StartOfRent.text = "${date.day}/${date.month}/${date.year}"
-        binding.EndOfRent.text = "${date.day}/${date.month}/${date.year}"
+        addOrderBinding.StartOfRent.text = "${date.day}/${date.month}/${date.year}"
+        addOrderBinding.EndOfRent.text = "${date.day}/${date.month}/${date.year}"
 
         /** Searchable spinner for clients */
         val customers_list = (activity as MainActivity).data_base_manager. readClientsFromTable()
@@ -126,39 +140,38 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
         for(customer in customers_list){
             spinner_customer_list.add(customer.first_name + " " + customer.second_name + "\n" + customer.email + "\n" + customer.phone_number )
         }
-        binding.CustomerID.adapter = ArrayAdapter<String>(activity as MainActivity, android.R.layout.simple_expandable_list_item_1,spinner_customer_list)
-        binding.CustomerID.onItemSelectedListener = this
+        addOrderBinding.CustomerID.adapter = ArrayAdapter<String>(activity as MainActivity, android.R.layout.simple_expandable_list_item_1,spinner_customer_list)
+        addOrderBinding.CustomerID.onItemSelectedListener = this
         /** Searchable spinner for films */
         val films_list = (activity as MainActivity).data_base_manager. getFilmAndCategory()
         val spinner_films_list = arrayListOf<String>()
         for(film in films_list){
             spinner_films_list.add(film.title + "\n" + film.category + "\n" + film.remain)
         }
-        binding.FilmID.adapter = ArrayAdapter<String>(activity as MainActivity, android.R.layout.simple_expandable_list_item_1,spinner_films_list)
-        binding.FilmID.onItemSelectedListener = this
+        addOrderBinding.FilmID.adapter = ArrayAdapter<String>(activity as MainActivity, android.R.layout.simple_expandable_list_item_1,spinner_films_list)
+        addOrderBinding.FilmID.onItemSelectedListener = this
 
 
-        binding.Cancel.setOnClickListener {
+        addOrderBinding.Cancel.setOnClickListener {
             dialog.dismiss()
         }
-        binding.EndOfRentButton.setOnClickListener{
+        addOrderBinding.EndOfRentButton.setOnClickListener{
 
             val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, day ->
                date.year = year
                 date.month = month + 1
                 date.day = day
-                binding.EndOfRent.text = "${date.day}/${date.month}/${date.year}"
+                addOrderBinding.EndOfRent.text = "${date.day}/${date.month}/${date.year}"
             }
             DatePickerDialog(activity as MainActivity, dateSetListener,
                 date.year,
                 date.month - 1,
                 date.day).show()
         }
-        binding.Add.setOnClickListener {
+        addOrderBinding.Add.setOnClickListener {
             /*(activity as MainActivity).data_base_manager.insertOrderToDB(binding.FilmID.text.toString().toInt(), binding.CustomerID.text.toString().toInt(),
                 (activity as MainActivity).current_date, date)*/
             if(selected_customer != null && selected_film != null){
-                Log.d("MyLog", selected_film.toString())
                 (activity as MainActivity).data_base_manager.insertOrderToDB(films_list[selected_film!!].id ,
                     customers_list[selected_customer!!].ID,
                     (activity as MainActivity).current_date, date)
@@ -173,6 +186,7 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
     }
     private val adapter = ReturnDialogAdapter()
     private val checkbox_list = arrayListOf<CheckBoxType>()
+    private var customers_list = arrayListOf<CustomerType>()
     private fun addReturnDialog(context: Context, inflater: LayoutInflater){
         val mBuilder = AlertDialog.Builder(context)
         val mView = inflater.inflate(R.layout.add_return, null)
@@ -186,7 +200,7 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
         binding.ReturnRV.adapter = adapter
 
         /** Searchable spinner for clients */
-        val customers_list = (activity as MainActivity).data_base_manager. readClientsFromTable()
+        customers_list = (activity as MainActivity).data_base_manager.readClientsFromTable()
         val spinner_customer_list = arrayListOf<String>()
         for(customer in customers_list){
             spinner_customer_list.add(customer.first_name + " " + customer.second_name + "\n" + customer.email + "\n" + customer.phone_number )
@@ -216,10 +230,20 @@ class CustomersOptions : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when(parent?.id){
-            R.id.FilmID -> selected_film = parent?.selectedItemPosition
-            R.id.CustomerID -> selected_customer = parent?.selectedItemPosition
+            R.id.FilmID -> selected_film = parent.selectedItemPosition
+            R.id.CustomerID -> {
+                selected_customer = parent.selectedItemPosition
+                if((activity as MainActivity).data_base_manager.checkCustomerDebts(selected_customer!! + 1) && ::addOrderBinding.isInitialized ){
+                        addOrderBinding.OrderError.visibility = View.VISIBLE
+                        addOrderBinding.Add.isEnabled = false
+                }
+                else{
+                    addOrderBinding.OrderError.visibility = View.GONE
+                    addOrderBinding.Add.isEnabled = true
+                }
+            }
             R.id.ReturnSpinner -> {
-                selected_customer = parent?.selectedItemPosition
+                selected_customer = parent.selectedItemPosition
                 checkbox_list.clear()
                 Log.d("MyLog", checkbox_list.toString())
                 addReturnUpdate()

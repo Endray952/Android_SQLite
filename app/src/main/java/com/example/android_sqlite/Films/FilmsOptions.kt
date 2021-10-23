@@ -110,7 +110,7 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
             dialog.dismiss()
         }
         binding.AddBtn.setOnClickListener {
-            if(selected_cat_pos != null && selected_cat_pos != 0) {
+            if(selected_cat_pos != null && selected_cat_pos != 0 && binding.Title.text.isNotEmpty() && binding.Remain.text.isNotEmpty()) {
                 (activity as MainActivity).data_base_manager.insertFilmToDB(
                     title = binding.Title.text.toString(),
                     remain = binding.Remain.text.toString().toInt(), category_ID = selected_cat_pos!!,
@@ -135,7 +135,14 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
             dialog.dismiss()
         }
         binding.AddBtn.setOnClickListener {
-            (activity as MainActivity).data_base_manager.insertCategoryToDB(binding.Category.text.toString(), binding.Tariff.text.toString().toDouble())
+            if(binding.Category.text.isNotEmpty() && binding.Tariff.text.isNotEmpty() ) {
+                (activity as MainActivity).data_base_manager.insertCategoryToDB(binding.Category.text.toString(), binding.Tariff.text.toString().toDouble())
+                dialog.dismiss()
+                Toast.makeText(activity, "Успешно", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                Toast.makeText(activity, "Ошибка", Toast.LENGTH_SHORT).show()
+            }
         }
     }
     inner class FilmsFoundAdapter : RecyclerView.Adapter<FilmsFoundAdapter.FilmsFoundHolder>() {

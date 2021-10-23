@@ -43,6 +43,7 @@ class FinancesOptions : Fragment(), AdapterView.OnItemSelectedListener {
         }
         binding.YearPicker.adapter = ArrayAdapter<String>(activity as MainActivity, android.R.layout.simple_expandable_list_item_1,yearsSpinner)
         binding.YearPicker.onItemSelectedListener = this
+        binding.YearPicker.setSelection(yearsSpinner.lastIndex)
         /*val report = (activity as MainActivity).data_base_manager.createFinancesReport(chosenYear)
         adapter.addAll(report)*/
     }
