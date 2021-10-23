@@ -83,6 +83,8 @@ class OrdersList : Fragment(), AdapterView.OnItemSelectedListener  {
                 else{
                     ChequeTypeRV.text = "Возврат"
                     CloseDateRV.text = data.close_date
+                    CloseDateTextRV.visibility = View.VISIBLE
+                    CloseDateRV.visibility = View.VISIBLE
                 }
                 FilmTitleRV.text = data.film
                 StartOfRentRV.text = data.start_of_rent

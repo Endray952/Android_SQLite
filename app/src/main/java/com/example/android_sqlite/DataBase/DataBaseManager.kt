@@ -293,7 +293,7 @@ class DataBaseManager(context: Context) {
                     shop_payment += (plan_days - days_before_close)* tariff + cassette_price
                 }
                 else{
-                    val debt = cassette_price - (days_before_close - plan_days)* tariff
+                    val debt = cassette_price - (days_before_close - plan_days )* tariff
                     if(debt > 0.0){
                         shop_payment += debt
                     }
@@ -348,36 +348,41 @@ class DataBaseManager(context: Context) {
     }
 
     fun createFinancesReport(year: Int): ArrayList<FinancesType>{
-        val data_list = initFinancesList()
+        var data_list = initFinancesList()
         val current_date: DateType = getDate()
         val cursor = db?.rawQuery("SELECT * FROM ${DataBaseConsts.Orders.TABLE_NAME} INNER JOIN ${DataBaseConsts.Films.TABLE_NAME} ON " +
                 "${DataBaseConsts.Orders.COLUMN_NAME_FILM_ID} = ${DataBaseConsts.Films.ID} INNER JOIN ${DataBaseConsts.Categories.TABLE_NAME} ON " +
                 "${DataBaseConsts.Films.COLUMN_NAME_CATEGORY_ID} = ${DataBaseConsts.Categories.ID}", null)
         while(cursor?.moveToNext()!!){
-            if(!cursor.isNull(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_FLAG_NOT_RETURNED))){ //If not returned
-               // val date: DateType = reparseDate(cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)))
-                val start_of_rent = reparseDate(cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)))
-                if(year - start_of_rent.year == 1) {
-                    val cassette_price = cursor?.getDouble(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_CASSETTE_PRICE))
-                    data_list[current_date.month - 1].income += cassette_price
-                }
+            val start_of_rent = reparseDate(cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)))
+            val cassette_price = cursor?.getDouble(cursor.getColumnIndex(DataBaseConsts.Films.COLUMN_NAME_CASSETTE_PRICE))
+            val end_of_rent = reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)))
+            val tariff = cursor.getDouble(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TARIFF))
+            val close_date =
+                if(cursor?.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_CLOSE_DATE)) != null)
+                    reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_CLOSE_DATE))) else null
+            //Деньги при взятии кассеты
+            if(start_of_rent.year == year) {
+                data_list[data_list.indexOfFirst { it.month == start_of_rent.month }].income += tariff * (calculateDays(start_of_rent, end_of_rent) + 1) + cassette_price
             }
-            else if (!cursor.isNull(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT))){
-                val start_of_rent = reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_START_OF_RENT)))
-                val end_of_rent = reparseDate(cursor.getString(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_END_OF_RENT)))
-                if(end_of_rent.year == year) {
-                    val tariff = cursor.getDouble(cursor.getColumnIndex(DataBaseConsts.Categories.COLUMN_NAME_TARIFF))
-                    data_list[end_of_rent.month - 1].income += calculateDays(start_of_rent, end_of_rent) * tariff
+            if(cursor.isNull(cursor.getColumnIndex(DataBaseConsts.Orders.COLUMN_NAME_FLAG_NOT_RETURNED)) && close_date != null && close_date.year == year){
+                val overdue = calculateDays(end_of_rent, close_date)
+                val debt = cassette_price - overdue*tariff
+                if(debt > 0){
+                    data_list[data_list.indexOfFirst { it.month ==  close_date.month}].spendings += debt
                 }
+                else {
+                    data_list[data_list.indexOfFirst { it.month ==  close_date.month}].income += kotlin.math.abs(debt)
+                }
+
             }
+
         }
-        data_list[12].income = data_list.sumOf { it.income }
+        data_list = calculateFinances(data_list)
+        cursor.close()
         return data_list
     }
 
-    fun closeDb(){
-        DbHelper.close()
-    }
     private fun calculateDays(start: DateType, end: DateType) : Int{
         val start_of_rent: Calendar = Calendar.getInstance()
         start_of_rent.set(Calendar.DAY_OF_MONTH, start.day)
@@ -398,19 +403,84 @@ class DataBaseManager(context: Context) {
     }
     private fun initFinancesList(): ArrayList<FinancesType>{
         val data_list = ArrayList<FinancesType>()
-        data_list.add(FinancesType("Январь", 0.0,0.0))
-        data_list.add(FinancesType("Февраль", 0.0,0.0))
-        data_list.add(FinancesType("Март", 0.0,0.0))
-        data_list.add(FinancesType("Апрель", 0.0,0.0))
-        data_list.add(FinancesType("Март", 0.0,0.0))
-        data_list.add(FinancesType("Июнь", 0.0,0.0))
-        data_list.add(FinancesType("Июль", 0.0,0.0))
-        data_list.add(FinancesType("Август", 0.0,0.0))
-        data_list.add(FinancesType("Сентябрь", 0.0,0.0))
-        data_list.add(FinancesType("Октябрь", 0.0,0.0))
-        data_list.add(FinancesType("Ноябрь", 0.0,0.0))
-        data_list.add(FinancesType("Декабрь", 0.0,0.0))
-        data_list.add(FinancesType("Всего", 0.0,0.0))
+        data_list.add(FinancesType("Январь", 0.0,0.0, 1))
+        data_list.add(FinancesType("Февраль", 0.0,0.0, 2))
+        data_list.add(FinancesType("Март", 0.0,0.0, 3))
+        data_list.add(FinancesType("Итого за 1 квартал", 0.0,0.0, -1))
+        data_list.add(FinancesType("Апрель", 0.0,0.0, 4))
+        data_list.add(FinancesType("Март", 0.0,0.0,5))
+        data_list.add(FinancesType("Июнь", 0.0,0.0,6))
+        data_list.add(FinancesType("Итого за 2 квартал", 0.0,0.0,-2))
+        data_list.add(FinancesType("Июль", 0.0,0.0, 7))
+        data_list.add(FinancesType("Август", 0.0,0.0, 8))
+        data_list.add(FinancesType("Сентябрь", 0.0,0.0, 9))
+        data_list.add(FinancesType("Итого за 3 квартал", 0.0,0.0,-3))
+        data_list.add(FinancesType("Октябрь", 0.0,0.0, 10))
+        data_list.add(FinancesType("Ноябрь", 0.0,0.0, 11))
+        data_list.add(FinancesType("Декабрь", 0.0,0.0, 12))
+        data_list.add(FinancesType("Итого за 4 квартал", 0.0,0.0,-4))
+        data_list.add(FinancesType("Всего", 0.0,0.0, -5))
+
         return data_list
+    }
+    private fun calculateFinances(data_list: ArrayList<FinancesType>) : ArrayList<FinancesType>{
+        val calculated_list = data_list
+        calculated_list[calculated_list.indexOfFirst { it.month ==  -1}].income =
+            calculated_list[calculated_list.indexOfFirst { it.month ==  1}].income +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  2}].income +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  3}].income
+
+        calculated_list[calculated_list.indexOfFirst { it.month ==  -2}].income =
+            calculated_list[calculated_list.indexOfFirst { it.month ==  4}].income +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  5}].income +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  6}].income
+
+        calculated_list[calculated_list.indexOfFirst { it.month ==  -3}].income =
+            calculated_list[calculated_list.indexOfFirst { it.month ==  7}].income +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  8}].income +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  9}].income
+
+        calculated_list[calculated_list.indexOfFirst { it.month ==  -4}].income =
+            calculated_list[calculated_list.indexOfFirst { it.month ==  10}].income +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  11}].income +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  12}].income
+
+        calculated_list[calculated_list.indexOfFirst { it.month ==  -5}].income =
+            calculated_list[calculated_list.indexOfFirst { it.month ==  -1}].income +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  -2}].income +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  -3}].income +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  -4}].income
+
+        /**Spendings */
+        calculated_list[calculated_list.indexOfFirst { it.month ==  -1}].spendings =
+            calculated_list[calculated_list.indexOfFirst { it.month ==  1}].spendings +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  2}].spendings +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  3}].spendings
+
+        calculated_list[calculated_list.indexOfFirst { it.month ==  -2}].spendings =
+            calculated_list[calculated_list.indexOfFirst { it.month ==  4}].spendings +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  5}].spendings +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  6}].spendings
+
+        calculated_list[calculated_list.indexOfFirst { it.month ==  -3}].spendings =
+            calculated_list[calculated_list.indexOfFirst { it.month ==  7}].spendings +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  8}].spendings +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  9}].spendings
+
+        calculated_list[calculated_list.indexOfFirst { it.month ==  -4}].spendings =
+            calculated_list[calculated_list.indexOfFirst { it.month ==  10}].spendings +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  11}].spendings +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  12}].spendings
+
+        calculated_list[calculated_list.indexOfFirst { it.month ==  -5}].spendings =
+            calculated_list[calculated_list.indexOfFirst { it.month ==  -1}].spendings +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  -2}].spendings +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  -3}].spendings +
+                    calculated_list[calculated_list.indexOfFirst { it.month ==  -4}].spendings
+
+        return calculated_list
+    }
+    fun closeDb(){
+        DbHelper.close()
     }
 }

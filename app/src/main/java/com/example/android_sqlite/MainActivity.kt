@@ -53,6 +53,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        //data_base_manager.closeDb()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         data_base_manager.closeDb()
     }
 }

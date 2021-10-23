@@ -1,21 +1,21 @@
 package com.example.android_sqlite
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android_sqlite.databinding.FragmentFinancesOptionsBinding
 
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android_sqlite.Films.FindFilmType
 import com.example.android_sqlite.Finances.FinancesType
 import com.example.android_sqlite.databinding.FinancesItemBinding
-import com.example.android_sqlite.databinding.FoundFilmsTableBinding
-import java.time.Year
 
 
 class FinancesOptions : Fragment(), AdapterView.OnItemSelectedListener {
@@ -53,9 +53,25 @@ class FinancesOptions : Fragment(), AdapterView.OnItemSelectedListener {
         inner class FinancesHolder(item: View) : RecyclerView.ViewHolder(item) {
             val binding = FinancesItemBinding.bind(item)
 
-            fun bind(table_content: FinancesType) = with(binding) {
-                FinancesMonth.text = table_content.month
-                Income.text = table_content.income.toString()
+            fun bind(content: FinancesType) = with(binding) {
+                FinancesMonth.text = content.month_name
+                Income.text = content.income.toString()
+                Spendings.text = content.spendings.toString()
+                if(table_content[layoutPosition].month < 0){
+                    FinancesMonth.background = getDrawable(activity as MainActivity, R.color.yellow)
+                    setMargins(LayoutRV,0,0,0, 100)
+                }
+                else{
+                    FinancesMonth.background = getDrawable(activity as MainActivity, R.drawable.table_background)
+                    setMargins(LayoutRV,0,0,0, 0)
+                }
+            }
+            fun setMargins(v: View, l: Int, t: Int, r: Int, b: Int) {
+                if (v.layoutParams is MarginLayoutParams) {
+                    val p = v.layoutParams as MarginLayoutParams
+                    p.setMargins(l, t, r, b)
+                    v.requestLayout()
+                }
             }
         }
 
