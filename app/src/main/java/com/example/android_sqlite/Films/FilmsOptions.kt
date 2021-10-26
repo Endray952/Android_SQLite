@@ -135,7 +135,7 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
                     cassette_price = binding.Price.text.toString().toDouble()
                 )
                 dialog.dismiss()
-                Toast.makeText(activity, "Ошибка", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Успешно", Toast.LENGTH_SHORT).show()
             }
             else{
                 Toast.makeText(activity, "Ошибка", Toast.LENGTH_SHORT).show()
@@ -165,53 +165,5 @@ class FilmsOptions : Fragment(), AdapterView.OnItemSelectedListener {
             }
         }
     }
-    /*inner class FilmsFoundAdapter : RecyclerView.Adapter<FilmsFoundAdapter.FilmsFoundHolder>() {
-
-        val table_content: ArrayList<FindFilmType> = arrayListOf()
-
-        inner class FilmsFoundHolder(item: View) : RecyclerView.ViewHolder(item) {
-            val binding = FoundFilmsTableBinding.bind(item)
-
-            fun bind(table_content: FindFilmType) = with(binding) {
-                //ID.text = table_content.ID.toString()
-                Title.text = table_content.title
-                Category.text = table_content.category
-                Remain.text = table_content.remain.toString()
-                //WillBeAvailable.text = "-"//table_content.category_ID.toString()
-                Price.text = table_content.price.toString()
-                if(table_content.available == ""){
-                    "-"
-                }
-                else{
-                    WillBeAvailable.text = table_content.available
-                }
-
-            }
-        }
-
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilmsFoundHolder {
-            val view =
-                LayoutInflater.from(parent.context).inflate(R.layout.found_films_table, parent, false)
-            return FilmsFoundHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: FilmsFoundHolder, position: Int) {
-            if (position != 0) {
-                holder.bind(table_content[position])
-            }
-        }
-
-        override fun getItemCount(): Int {
-            return table_content.size
-        }
-
-        fun addAll(data: List<FindFilmType>) {
-            this.table_content.clear()
-            this.table_content.addAll(data)
-            notifyDataSetChanged()
-        }
-    }*/
-
 
 }
